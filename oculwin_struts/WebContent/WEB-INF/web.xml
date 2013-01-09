@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app id="WebApp_9" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<web-app id="WebApp_9" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 	<display-name>OculWin Struts</display-name>
 
+	<resource-ref>
+		<res-ref-name>jdbc/OculWinDS</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+		<res-sharing-scope>Shareable</res-sharing-scope>
+	</resource-ref>
+	
 	<!-- Standard Action Servlet Configuration -->
 	<servlet>
 		<servlet-name>action</servlet-name>
@@ -20,6 +29,17 @@
 			<param-name>debug</param-name>
 			<param-value>true</param-value>
 		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>log4j-init</servlet-name>
+		<servlet-class>it.moda.utils.Log4jInit</servlet-class>
+
+		<init-param>
+			<param-name>log4j-init-file</param-name>
+			<param-value>WEB-INF/log4j.properties</param-value>
+		</init-param>
+
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 	<!-- Standard Action Servlet Mapping -->
