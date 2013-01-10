@@ -29,6 +29,7 @@
 			<param-name>debug</param-name>
 			<param-value>true</param-value>
 		</init-param>
+		<load-on-startup>3</load-on-startup>
 	</servlet>
 	<servlet>
 		<servlet-name>log4j-init</servlet-name>

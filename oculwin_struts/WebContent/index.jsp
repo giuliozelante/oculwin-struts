@@ -23,7 +23,7 @@
 				<strong>Agenda</strong>
 				<hr />
 				<ul>
-					<li><a href="/oculwin_struts/agenda/agenda-resina.jsp">Agenda Resina</a></li>
+					<li><html:link page="/calendario.do?method=load">Agenda Resina</html:link></li>
 				</ul>
 			</div>
 			<div id="content">

@@ -2,6 +2,7 @@ package it.moda.dao;
 
 import it.moda.dto.CalendarioDTO;
 import it.moda.utils.ConnectionFactory;
+import it.moda.utils.Paginator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CalendarioDAO {
+public class CalendarioDAO extends GenericDAO{
 
 	Connection con=null;
 	PreparedStatement ptmt=null;
@@ -20,13 +21,11 @@ public class CalendarioDAO {
 	{
 
 	}
-
-	private Connection getConnection() throws SQLException
-	{
-		Connection conn;
-		conn=ConnectionFactory.getInstance().getConnection();
-		return conn;
+	public CalendarioDAO(Paginator paginator){
+		super.setPaginator(paginator);
 	}
+
+
 //	public void add(CalendarioDTO calendarioDTO)
 //	{
 //
@@ -156,15 +155,19 @@ public class CalendarioDAO {
 //
 //	}
 
-	public List<CalendarioDTO> findAll()
+	public List<CalendarioDTO> findAll(int rowNums)
 	{
 		List<CalendarioDTO> appuntamenti=new ArrayList<CalendarioDTO>();
 		CalendarioDTO calendarioDTO=null;
+		StringBuffer sb=null;
+		this.getPaginator().setRowNums(rowNums);
 		try
 		{
-			StringBuffer sb = new StringBuffer("SELECT * FROM CALENDARIO ORDER BY DATA");
 			con=getConnection();
+			sb = new StringBuffer("SELECT * FROM CALENDARIO ORDER BY DATA LIMIT ?, ?");
 			ptmt=con.prepareStatement(sb.toString());
+			ptmt.setInt(1, this.getPaginator().getPage()*this.getPaginator().getRowNums());
+			ptmt.setInt(2, this.getPaginator().getRowNums());
 			rs=ptmt.executeQuery();
 			while(rs.next())
 			{
