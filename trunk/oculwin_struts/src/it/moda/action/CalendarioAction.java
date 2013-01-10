@@ -22,9 +22,9 @@ public class CalendarioAction extends DispatchAction{
 
 		
 		CalendarioForm calendarioForm = (CalendarioForm) form;
-		CalendarioDAO calendarioDAO = new CalendarioDAO(calendarioForm.getPaginator());
+		CalendarioDAO calendarioDAO = new CalendarioDAO(calendarioForm.getPaginator(),7);
 		calendarioForm.setPaginator(calendarioDAO.getPaginator("CALENDARIO"));
-		calendarioForm.setListCalendario(calendarioDAO.findAll(7));
+		calendarioForm.setListCalendario(calendarioDAO.findAll());
 
 		request.setAttribute("listCalendario", calendarioForm.getListCalendario());
 

@@ -4,53 +4,33 @@ by Steve Hatcher
 http://stever.ca
 http://www.cssstickyfooter.com
 */
-* {
-	margin: 0;
-	padding: 0;
-}
+
+* {margin:0;padding:0;} 
 
 /* must declare 0 margins on everything, also for main layout components use padding, not 
 vertical margins (top and bottom) to add spacing, else those margins get added to total height 
 and your footer gets pushed down a bit more, creating vertical scroll bars in the browser */
-html,body {
-	height: 100%;
-}
 
-#container {
-	min-height: 100%;
-}
+html, body {height: 100%;}
 
-#main {
-	overflow: auto;
-	padding-bottom: 1em;
-} /* must be same height as the footer */
-#footer {
-	position: relative;
-	margin-top: -1em; /* negative value of footer height */
-	height: 1em;
-	clear: both;
-}
+#wrap {min-height: 100%;}
+
+#main {overflow:auto;
+	padding-bottom: 180px;}  /* must be same height as the footer */
+
+#footer {position: relative;
+	margin-top: -180px; /* negative value of footer height */
+	height: 180px;
+	clear:both;} 
 
 /*Opera Fix*/
-body:before { /* thanks to Maleika (Kohoutec)*/
-	content: "";
-	height: 100%;
-	float: left;
-	width: 0;
-	margin-top: -32767px; /* thank you Erik J - negate effect of float*/
+body:before {/* thanks to Maleika (Kohoutec)*/
+content:"";
+height:100%;
+float:left;
+width:0;
+margin-top:-32767px;/* thank you Erik J - negate effect of float*/
 }
-
-/* IMPORTANT
-
-You also need to include this conditional style in the <head> of your HTML file to feed this style to IE 6 and lower and 8 and higher.
-
-<!--[if !IE 7]>
-	<style type="text/css">
-		#wrap {display:table;height:100%}
-	</style>
-<![endif]-->
-
-*/
 
 /*stili per il layout fluido*/
 body {
@@ -149,18 +129,22 @@ div#navigation a#activelink {
 	padding: 5px 5px;
 }
 
-.simpletablestyle th {
-	background: url(#{request.contextPath}/resources/gfx/bkg-blkheader.png)
-		black repeat-x top left;
+.simpletablestyle th,.simpletablestyle th a {
+	background: black repeat-x top left;
 	font-size: 12px;
 	font-weight: normal;
 	padding: 0 10px 0 5px;
 	border-bottom: #999999 dotted 1px;
+	color: #FFFFFF;
+	text-decoration:none;
+}
+
+.simpletablestyle th a:hover {
+	text-decoration: underline;
 }
 
 .simpletablestyle thead {
-	background: url(#{request.contextPath}/resources/gfx/bkg-blkheader.png)
-		black repeat-x top left;
+	background: black repeat-x top left;
 	height: 31px;
 	font-size: 10px;
 	font-weight: bold;
@@ -173,24 +157,13 @@ div#navigation a#activelink {
 }
 
 .simpletablestype tfoot {
-	height: 20px;
+	background: black repeat-x top left;
+	height: 31px;
 	font-size: 10px;
 	font-weight: bold;
-	background-color: #EAECEE;
-	text-align: center;
+	color: #FFFFFF;
+	text-align: left;
 }
-.simpletablestype tfoot tr th{
-	color: #FFF;
-}
-.simpletablestype tfoot tr th a{
-	color: #FFF;
-	font-size: 14px;
-	text-decoration: none;
-}
-.simpletablestype tfoot tr th a:hover{
-	text-decoration: underline;
-}
-
 
 .simpletablestyle tr.header td {
 	padding: 0px 10px 0px 5px;

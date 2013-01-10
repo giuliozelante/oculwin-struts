@@ -21,8 +21,9 @@ public class CalendarioDAO extends GenericDAO{
 	{
 
 	}
-	public CalendarioDAO(Paginator paginator){
+	public CalendarioDAO(Paginator paginator,int rowNums) {
 		super.setPaginator(paginator);
+		super.getPaginator().setRowNums(rowNums);
 	}
 
 
@@ -155,12 +156,11 @@ public class CalendarioDAO extends GenericDAO{
 //
 //	}
 
-	public List<CalendarioDTO> findAll(int rowNums)
+	public List<CalendarioDTO> findAll()
 	{
 		List<CalendarioDTO> appuntamenti=new ArrayList<CalendarioDTO>();
 		CalendarioDTO calendarioDTO=null;
 		StringBuffer sb=null;
-		this.getPaginator().setRowNums(rowNums);
 		try
 		{
 			con=getConnection();
