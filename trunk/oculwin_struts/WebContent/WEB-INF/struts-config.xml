@@ -32,6 +32,7 @@
 		<!-- Default forward to "Welcome" action -->
 		<!-- Demonstrates using index.jsp to forward -->
 		<forward name="welcome" path="/Welcome.do" />
+		
 	</global-forwards>
 
 
@@ -43,10 +44,11 @@
 		<action path="/calendario"
 			type="it.moda.action.CalendarioAction"
 			parameter="method" name="calendarioForm" scope="request">
-			<forward name="success" path="/agenda/agenda-resina.jsp" />
+			<forward name="success" path="oculwin.agenda-resina" />
 		</action>
 		
 		<action path="/Welcome" forward="/pages/Welcome.jsp" />
+		<action path="/index" forward="default"/>
 
 		<!-- sample input and input submit actions <action path="/Input" type="org.apache.struts.actions.ForwardAction" 
 			parameter="/pages/Input.jsp"/> <action path="/InputSubmit" type="app.InputAction" 
@@ -93,6 +95,11 @@
 			value="/org/apache/struts/validator/validator-rules.xml,
                /WEB-INF/validation.xml" />
 	</plug-in>
+	
+		<plug-in className="org.apache.struts.tiles.TilesPlugin">
+		<set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml" />
+	</plug-in>
+	
 
 </struts-config>
 
