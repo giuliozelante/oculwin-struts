@@ -25,8 +25,9 @@ public class GenericDAO {
 	public GenericDAO() {
 		// TODO Auto-generated constructor stub
 	}
-	public GenericDAO(Paginator paginator) {
+	public GenericDAO(Paginator paginator,int rowNums) {
 		this.paginator=paginator;
+		this.paginator.setRowNums(rowNums);
 	}
 
 	public Paginator getPaginator(String table){
@@ -65,7 +66,7 @@ public class GenericDAO {
 			}
 
 		}
-		return paginator;
+		return new Paginator(paginator.getPage(), paginator.getRowNums(), paginator.getTotRows());
 	}
 
 	public Connection getConnection() throws SQLException

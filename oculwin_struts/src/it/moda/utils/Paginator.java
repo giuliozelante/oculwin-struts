@@ -7,6 +7,8 @@ public class Paginator {
 	private int numPages;
 	
 	public Paginator() {
+		if(rowNums!=0)
+			this.numPages=totRows%2==1?totRows/rowNums+1:totRows/rowNums;
 	}
 	public Paginator(int page,int rowNums,int totRows) {
 		this.page=page;

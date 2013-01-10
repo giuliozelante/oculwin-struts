@@ -8,15 +8,15 @@
 <link type="text/css" rel="stylesheet" href="/oculwin_struts/css/screen.css" />
 <!--[if !IE 7]>
 	<style type="text/css">
-		#container {display:table;height:100%}
+		#wrap {display:table;height:100%}
 	</style><![endif]-->
 </head>
 <body>
-	<div id="container">
+	<div id="wrap">
+		<div id="header">
+			<img src="/oculwin_struts/gfx/testata.jpg" />
+		</div>
 		<div id="main">
-			<div id="header">
-				<img src="/oculwin_struts/gfx/testata.jpg" />
-			</div>
 			<div id="navigation">
 				<strong>Agenda</strong>
 				<hr />
