@@ -34,12 +34,12 @@
 											<fmt:formatDate value="${day.data}" dateStyle="full" />
 											<!-- <nested:write property="data" /> -->
 										</td>
-										<td><nested:checkbox property="festivo" disabled="true" /></td>
-										<td><nested:write property="message" /></td>
+										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="values"/>'"><nested:checkbox property="festivo" disabled="true" /></td>
+										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="values"/>'"><nested:write property="message" /></td>
 										<!-- =IIf((([Max_age_R]-[Num_app]>0 Or IsNull([Max_age_R]-[Num_app])) And [festivo]=0);"DISP";"COMP") -->
 										<c:choose>
 											<c:when test="${(day.maxAgeR-day.totaleI) > 0 && !day.festivo }">
-												<td style="background: #0f0">DISP.</td>
+												<td style="background: #0f0">DISP.<!-- ${day.maxAgeR} ${day.totaleI}  ${day.festivo} --></td>
 											</c:when>
 											<c:otherwise>
 												<td style="background: #F00">COMP.</td>
@@ -69,12 +69,12 @@
 												<td style="background: #F00">COMP.</td>
 											</c:otherwise>
 										</c:choose>
-										<td>&#160;</td>
-										<td><nested:write property="totaleI" /></td>
-										<td><nested:write property="totaleRr" /></td>
-										<td><nested:write property="totaleM" /></td>
-										<td><nested:write property="totaleB" /></td>
-										<td><nested:write property="totaleR" /></td>
+										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="values"/>'">&#160;</td>
+										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="values"/>'"><nested:write property="totaleI" /></td>
+										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="values"/>'"><nested:write property="totaleRr" /></td>
+										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="values"/>'"><nested:write property="totaleM" /></td>
+										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="values"/>'"><nested:write property="totaleB" /></td>
+										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="values"/>'"><nested:write property="totaleR" /></td>
 									</tr>
 								</nested:iterate>
 							</tbody>
@@ -117,7 +117,7 @@
 							<tbody>
 								<nested:iterate property="appuntamenti" id="app">
 									<tr>
-										<td><nested:write property="pden" /></td>
+										<td><nested:write property="pden" /><html:select property="pazienti" /></td>
 										<td><fmt:formatDate value="${app.pnascita}" dateStyle="long" /></td>
 										<td><nested:write property="ora" /></td>
 										<td><nested:write property="ptel" /></td>

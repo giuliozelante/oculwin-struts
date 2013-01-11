@@ -60,7 +60,8 @@ public class CalendarioAction extends DispatchAction{
 		CalendarioDAO calendarioDAO = new CalendarioDAO();
 		java.text.SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 		calendarioForm.setAppuntamenti(calendarioDAO.findByData(sdf.parse(request.getParameter("data"))));
-
+		calendarioForm.setPazienti(calendarioDAO.fillPazientiList());
+		
 		return (mapping.findForward("success"));
 	}
 	

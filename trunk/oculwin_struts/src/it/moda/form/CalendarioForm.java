@@ -2,6 +2,7 @@ package it.moda.form;
 
 import it.moda.dto.AgendaDettaglioDTO;
 import it.moda.dto.CalendarioDTO;
+import it.moda.dto.PazienteDTO;
 import it.moda.utils.Paginator;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class CalendarioForm extends BaseForm {
 	private List<AgendaDettaglioDTO> appuntamenti;
 	private Paginator paginator;
 	private boolean firstTime;
+	private List<PazienteDTO> pazienti;
 //	private Integer id;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 	//	private Date data;
@@ -155,6 +157,12 @@ public class CalendarioForm extends BaseForm {
 		                return new AgendaDettaglioDTO();
 		            }
 		        });
+		this.pazienti = ListUtils.lazyList(new ArrayList(),
+		        new Factory() {
+		            public Object create() {
+		                return new PazienteDTO();
+		            }
+		        });
 		this.paginator = new Paginator();
 		this.setFirstTime(true);
 //		this.id = null;
@@ -198,5 +206,11 @@ public class CalendarioForm extends BaseForm {
 	}
 	public void setAppuntamenti(List<AgendaDettaglioDTO> appuntamenti) {
 		this.appuntamenti = appuntamenti;
+	}
+	public List<PazienteDTO> getPazienti() {
+		return pazienti;
+	}
+	public void setPazienti(List<PazienteDTO> pazienti) {
+		this.pazienti = pazienti;
 	}
 }
