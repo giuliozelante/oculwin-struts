@@ -1,24 +1,27 @@
 package it.moda.form;
 
+import it.moda.dto.AgendaDettaglioDTO;
 import it.moda.dto.CalendarioDTO;
 import it.moda.utils.Paginator;
 
-import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.ListUtils;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.struts.action.ActionForm;
+import org.apache.commons.collections.Factory;
+import org.apache.commons.collections.ListUtils;
 import org.apache.struts.action.ActionMapping;
 
-public class CalendarioForm extends ActionForm {
+@SuppressWarnings("serial")
+public class CalendarioForm extends BaseForm {
 	private List<CalendarioDTO> listCalendario;
+	private List<AgendaDettaglioDTO> appuntamenti;
 	private Paginator paginator;
+	private boolean firstTime;
 //	private Integer id;
-//	private Date data;
+@SuppressWarnings({ "unchecked", "rawtypes" })
+	//	private Date data;
 //	private Boolean festivo;
 //	private String message;
 //	private Integer maxAgeC1;
@@ -146,7 +149,14 @@ public class CalendarioForm extends ActionForm {
 		                return new CalendarioDTO();
 		            }
 		        });
+		this.appuntamenti = ListUtils.lazyList(new ArrayList(),
+		        new Factory() {
+		            public Object create() {
+		                return new AgendaDettaglioDTO();
+		            }
+		        });
 		this.paginator = new Paginator();
+		this.setFirstTime(true);
 //		this.id = null;
 //		this.data = new Date();
 //		this.festivo = false;
@@ -176,5 +186,17 @@ public class CalendarioForm extends ActionForm {
 	}
 	public void setPaginator(Paginator paginator) {
 		this.paginator = paginator;
+	}
+	public boolean isFirstTime() {
+		return firstTime;
+	}
+	public void setFirstTime(boolean firstTime) {
+		this.firstTime = firstTime;
+	}
+	public List<AgendaDettaglioDTO> getAppuntamenti() {
+		return appuntamenti;
+	}
+	public void setAppuntamenti(List<AgendaDettaglioDTO> appuntamenti) {
+		this.appuntamenti = appuntamenti;
 	}
 }

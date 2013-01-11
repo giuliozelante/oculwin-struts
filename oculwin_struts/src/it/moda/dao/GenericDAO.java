@@ -5,10 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
+
 import it.moda.utils.ConnectionFactory;
 import it.moda.utils.Paginator;
 
 public class GenericDAO {
+	private static Logger log = Logger.getLogger(GenericDAO.class);
 	private Paginator paginator;
 
 	public Paginator getPaginator() {
@@ -43,7 +46,7 @@ public class GenericDAO {
 		}
 		catch(SQLException e)
 		{
-			e.printStackTrace();
+			log.error(e.getMessage(),e);
 		}
 		finally
 		{
@@ -58,11 +61,11 @@ public class GenericDAO {
 			}
 			catch(SQLException e)
 			{
-				e.printStackTrace();
+				log.error(e.getMessage(),e);
 			}
 			catch(Exception e)
 			{
-				e.printStackTrace();
+				log.error(e.getMessage(),e);
 			}
 
 		}

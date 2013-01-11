@@ -3,36 +3,72 @@
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
 <%@ taglib uri="http://struts.apache.org/tags-nested" prefix="nested"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 				<html:form action="/calendario" method="get">
+					<html:hidden property="firstTime"/>
 					<div class="agendaTableContainer">
 						<table class="simpletablestyle">
 							<thead>
 								<tr>
-									<th scope="col"><bean:message key="table.header.data" /></th>
-									<th scope="col"><bean:message key="table.header.off" /></th>
-									<th scope="col"><bean:message key="table.header.avvisi" /></th>
-									<th scope="col"><bean:message key="table.header.impronta" /></th>
-									<th scope="col"><bean:message key="table.header.rinnovo" /></th>
-									<th scope="col"><bean:message key="table.header.modifica" /></th>
-									<th scope="col"><bean:message key="table.header.baby" /></th>
-									<th scope="col">&#160;</th>
-									<th scope="col"><bean:message key="table.header.num.impronta" /></th>
-									<th scope="col"><bean:message key="table.header.num.rinnovo" /></th>
-									<th scope="col"><bean:message key="table.header.num.modifica" /></th>
-									<th scope="col"><bean:message key="table.header.num.baby" /></th>
-									<th scope="col"><bean:message key="table.header.num.altro" /></th>
+									<th scope="col" style="width: 20%"><bean:message key="table.header.data" /></th>
+									<th scope="col" style="width: 1%"><bean:message key="table.header.off" /></th>
+									<th scope="col" style="width: 30%"><bean:message key="table.header.avvisi" /></th>
+									<th scope="col" style="width: 3%"><bean:message key="table.header.impronta" /></th>
+									<th scope="col" style="width: 3%"><bean:message key="table.header.rinnovo" /></th>
+									<th scope="col" style="width: 3%"><bean:message key="table.header.modifica" /></th>
+									<th scope="col" style="width: 3%"><bean:message key="table.header.baby" /></th>
+									<th scope="col" style="width: 10%">&#160;</th>
+									<th scope="col" style="width: 3%"><bean:message key="table.header.num.impronta" /></th>
+									<th scope="col" style="width: 3%"><bean:message key="table.header.num.rinnovo" /></th>
+									<th scope="col" style="width: 3%"><bean:message key="table.header.num.modifica" /></th>
+									<th scope="col" style="width: 3%"><bean:message key="table.header.num.baby" /></th>
+									<th scope="col" style="width: 3%"><bean:message key="table.header.num.altro" /></th>
 								</tr>
 							</thead>
 							<tbody>
 								<nested:iterate property="listCalendario" id="day">
 									<tr>
-										<td><nested:hidden property="id" /><fmt:formatDate value="${day.data}" dateStyle="full" /></td>
+										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="values"/>'">
+											
+											<nested:hidden property="id" />
+											<fmt:formatDate value="${day.data}" dateStyle="full" />
+											<!-- <nested:write property="data" /> -->
+										</td>
 										<td><nested:checkbox property="festivo" disabled="true" /></td>
 										<td><nested:write property="message" /></td>
-										<td><nested:write property="maxAgeR" /></td>
-										<td><nested:write property="maxAgeRr" /></td>
-										<td><nested:write property="maxAgeC2" /></td>
-										<td><nested:write property="maxAgeB" /></td>
+										<!-- =IIf((([Max_age_R]-[Num_app]>0 Or IsNull([Max_age_R]-[Num_app])) And [festivo]=0);"DISP";"COMP") -->
+										<c:choose>
+											<c:when test="${(day.maxAgeR-day.totaleI) > 0 && !day.festivo }">
+												<td style="background: #0f0">DISP.</td>
+											</c:when>
+											<c:otherwise>
+												<td style="background: #F00">COMP.</td>
+											</c:otherwise>
+										</c:choose>
+										<c:choose>
+											<c:when test="${(day.maxAgeRr-day.totaleRr) > 0 && !day.festivo }">
+												<td style="background: #0f0">DISP.</td>
+											</c:when>
+											<c:otherwise>
+												<td style="background: #F00">COMP.</td>
+											</c:otherwise>
+										</c:choose>
+										<c:choose>
+											<c:when test="${(day.maxAgeC2-day.totaleM) > 0 && !day.festivo }">
+												<td style="background: #0f0">DISP.</td>
+											</c:when>
+											<c:otherwise>
+												<td style="background: #F00">COMP.</td>
+											</c:otherwise>
+										</c:choose>
+										<c:choose>
+											<c:when test="${(day.maxAgeB-day.totaleB) > 0 && !day.festivo }">
+												<td style="background: #0f0">DISP.</td>
+											</c:when>
+											<c:otherwise>
+												<td style="background: #F00">COMP.</td>
+											</c:otherwise>
+										</c:choose>
 										<td>&#160;</td>
 										<td><nested:write property="totaleI" /></td>
 										<td><nested:write property="totaleRr" /></td>
@@ -51,79 +87,46 @@
 											<!--totRows: ${calendarioForm.paginator.totRows} -->
 											<!--numPages: ${calendarioForm.paginator.numPages} -->
 											<nested:notEqual property="page" value="0">
-												<a href="/oculwin_struts/calendario.do?method=load&paginator.page=0">&lt;&lt;</a>
-												<a href="/oculwin_struts/calendario.do?method=load&paginator.page=${calendarioForm.paginator.page-1}">&lt;</a>
+												<html:link href="/oculwin_struts/calendario.do?method=load&paginator.page=0" property="values">&lt;&lt;</html:link>
+												<a href="/oculwin_struts/calendario.do?method=load&paginator.page=${calendarioForm.paginator.page-1}&firstTime=${calendarioForm.firstTime}">&lt;</a>
 											</nested:notEqual>${calendarioForm.paginator.page+1}
 											<nested:notEqual property="page" value="${numPages}">
-												<a href="/oculwin_struts/calendario.do?method=load&paginator.page=${calendarioForm.paginator.page+1}">&gt;</a>
-												<a href="/oculwin_struts/calendario.do?method=load&paginator.page=${calendarioForm.paginator.numPages}">&gt;&gt;</a>
+												<a href="/oculwin_struts/calendario.do?method=load&paginator.page=${calendarioForm.paginator.page+1}&firstTime=${calendarioForm.firstTime}">&gt;</a>
+												<a href="/oculwin_struts/calendario.do?method=load&paginator.page=${calendarioForm.paginator.numPages}&firstTime=${calendarioForm.firstTime}">&gt;&gt;</a>
 											</nested:notEqual>
 										</nested:nest></th>
 								</tr>
 							</tfoot>
 						</table>
-						<!-- 
-			<h:dataTable var="_appuntamento" value="#{appuntamenti}"
-				rendered="#{not empty appuntamenti}" styleClass="simpletablestyle">
-				<h:column>
-					<f:facet name="header"><bean:message key="table.header.data" /></f:facet>
-					<h:outputText value="#{_appuntamento.data}">
-				        <f:convertDateTime dateStyle="full" type="date" />
-				    </h:outputText>
-           	 	</h:column>
-				<h:column>
-					<f:facet name="header"><bean:message key="table.header.off" /></f:facet>
-					<h:selectBooleanCheckbox value="#{_appuntamento.festivo}"
-						disabled="true" />
-				</h:column>
-				<h:column>
-					<f:facet name="header"><bean:message key="table.header.avvisi" /></f:facet>
-                	#{_appuntamento.message}
-            	</h:column>
-				<h:column>
-					<f:facet name="header"><bean:message key="table.header.impronta" /></f:facet>
-                	#{_appuntamento.maxAgeR}
-            	</h:column>
-            	<h:column>
-					<f:facet name="header"><bean:message key="table.header.rinnovo" /></f:facet>
-                	#{_appuntamento.maxAgeRr}
-            	</h:column>
-            	<h:column>
-					<f:facet name="header"><bean:message key="table.header.modifica" /></f:facet>
-                	#{_appuntamento.maxAgeC2}
-            	</h:column>
-            	<h:column>
-					<f:facet name="header"><bean:message key="table.header.baby" /></f:facet>
-                	#{_appuntamento.maxAgeB}
-            	</h:column>
-           		<h:column>
-					<f:facet name="header">&#160;</f:facet>
-                	&#160;
-            	</h:column>
-            	<h:column>
-					<f:facet name="header"><bean:message key="table.header.num.impronta" /></f:facet>
-                	#{_appuntamento.totaleI}
-            	</h:column>
-            	<h:column>
-					<f:facet name="header"><bean:message key="table.header.num.rinnovo" /></f:facet>
-                	#{_appuntamento.totaleRr}
-            	</h:column>
-            	<h:column>
-					<f:facet name="header"><bean:message key="table.header.num.modifica" /></f:facet>
-                	#{_appuntamento.totaleM}
-            	</h:column>
-            	<h:column>
-					<f:facet name="header"><bean:message key="table.header.num.baby" /></f:facet>
-                	#{_appuntamento.totaleB}
-            	</h:column>
-            	<h:column>
-					<f:facet name="header"><bean:message key="table.header.num.altro" /></f:facet>
-                	#{_appuntamento.totaleR}
-            	</h:column>
-				<f:facet name="footer">
-
-				</f:facet>
-			</h:dataTable>
-			 -->
 					</div>
+					<nested:notEmpty property="appuntamenti">
+					<br />
+					<h1>Appuntamenti</h1>
+					<div class="agendaTableContainer">
+						<table class="simpletablestyle">
+							<thead>
+								<tr>
+									<th scope="col" style="width: 20%"><bean:message key="table.header.appuntamenti.paziente" /></th>
+									<th scope="col" style="width: 10%"><bean:message key="table.header.appuntamenti.datanascita" /></th>
+									<th scope="col" style="width: 5%"><bean:message key="table.header.appuntamenti.ora" /></th>
+									<th scope="col" style="width: 10%"><bean:message key="table.header.appuntamenti.telefono" /></th>
+									<th scope="col" style="width: 10%"><bean:message key="table.header.appuntamenti.tipoappuntamento" /></th>
+									<th scope="col" style="width: 45%"><bean:message key="table.header.appuntamenti.note" /></th>
+								</tr>
+							</thead>
+							<tbody>
+								<nested:iterate property="appuntamenti" id="app">
+									<tr>
+										<td><nested:write property="pden" /></td>
+										<td><fmt:formatDate value="${app.pnascita}" dateStyle="long" /></td>
+										<td><nested:write property="ora" /></td>
+										<td><nested:write property="ptel" /></td>
+										<td><nested:write property="tiOpeAge" /></td>
+										<td><nested:write property="note" /></td>
+									</tr>
+								</nested:iterate>
+							</tbody>
+						</table>
+					</div>
+					</nested:notEmpty>
 				</html:form>

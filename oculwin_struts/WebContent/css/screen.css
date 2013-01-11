@@ -16,11 +16,11 @@ html, body {height: 100%;}
 #wrap {min-height: 100%;}
 
 #main {overflow:auto;
-	padding-bottom: 180px;}  /* must be same height as the footer */
+	padding-bottom: 20px;}  /* must be same height as the footer */
 
 #footer {position: relative;
-	margin-top: -180px; /* negative value of footer height */
-	height: 180px;
+	margin-top: -20px; /* negative value of footer height */
+	height: 20px;
 	clear:both;} 
 
 /*Opera Fix*/
@@ -72,7 +72,7 @@ div#footer a {
 /*stili specifici per il layout*/
 div#navigation {
 	float: left;
-	width: 180px
+	width: 180px;
 }
 
 div#content {
@@ -127,6 +127,10 @@ div#navigation a#activelink {
 	padding-left: 6px;
 	font-size: 11px;
 	padding: 5px 5px;
+}
+.simpletablestyle tr:hover>td {
+	background: #d4d3d3;
+	cursor:pointer;
 }
 
 .simpletablestyle th,.simpletablestyle th a {
