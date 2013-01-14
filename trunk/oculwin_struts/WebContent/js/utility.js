@@ -87,6 +87,8 @@
 		statusText[505] = "HTTP Version Not Supported";
 		statusText[509] = "Bandwidth Limit Exceeded";
 /** ----------------------------------------------------------------------*/
+		
+/**---------------------------Calendario.do-------------------------------*/
 var fun;
 function assignPaziente(valore,index){
 	document.getElementById("pden"+index).innerHTML=valore.split("|")[0];
@@ -95,11 +97,27 @@ function assignPaziente(valore,index){
 	document.getElementById("pnascita"+index).innerHTML=valore.split("|")[2];
 	document.getElementsByName("appuntamenti["+index+"].pnascita")[0].value=valore.split("|")[1];
 	
-	document.getElementById("tdPaziente"+index).onclick=function(){document.getElementById('pazienti'+index).style.display='block';};
+	document.getElementById("tdPaziente"+index).onclick=fun.onclick;
 	//document.getElementById("pazienti"+index).style.display='none';
 	
 }
-
+function openSelectOra(index,obj){
+	document.getElementById("ora"+index).innerHTML="";
+	document.getElementById("oraHiddenDiv"+index).style.display="block";
+	
+	fun=obj;
+	
+	obj.onclick=function(){javascript:void(0);};
+	obj.onkeypress=obj.onclick;
+}
+function assignOra(index,obj){
+	document.getElementById('ora'+index).innerHTML=obj.value;
+	
+	obj.onclick=fun.onclick;
+	obj.onkeypress=obj.onclick;
+	
+	obj.parentNode.style.display='none';
+}
 function createRequestObject() {
 	var ro;
 	var browser = navigator.appName;
@@ -113,19 +131,19 @@ function createRequestObject() {
 
 var http = createRequestObject();
 
-function sndReq(Search,filter,page) {
-	
-	/*var FValue=filter.value;
-	for(var i=0;i<filter.length;i++){
-		if(filter.item(i).checked){
-			FValue=filter.item(i).value;
-		}
-	}*/
-	http.open('get', 'search.php?search='+Search.value+'&filter='+filter+'&page='+page, true);
-	http.setRequestHeader('Content-Type',  "text/xml");
-	http.onreadystatechange = handleResponse;
-	http.send(null);
-}
+//function sndReq(Search,filter,page) {
+//	
+//	/*var FValue=filter.value;
+//	for(var i=0;i<filter.length;i++){
+//		if(filter.item(i).checked){
+//			FValue=filter.item(i).value;
+//		}
+//	}*/
+//	http.open('get', 'search.php?search='+Search.value+'&filter='+filter+'&page='+page, true);
+//	http.setRequestHeader('Content-Type',  "text/xml");
+//	http.onreadystatechange = handleResponse;
+//	http.send(null);
+//}
 
 function fillPazientiList(i,element) {
 	
@@ -139,13 +157,14 @@ function fillPazientiList(i,element) {
 	element.onclick=function(){javascript:void(0);};
 	document.getElementById("pden"+i).innerHTML="";
 	document.getElementById('pazientiHiddenDiv'+i).style.display='block';
-	if(document.getElementById('pazienti').innerHTML.trim()==''){
+	if(document.getElementById('pazienti').innerHTML.replace('\n','')==''){
 		http.open('get', 'calendario.do?method=fillPazientiList', true);
 		http.setRequestHeader('Content-Type',  "text/xml");
 		http.onreadystatechange = function foo() {
 			if((http.readyState == 4)&&(http.status == 200)){
 				var response = http.responseText;
-				document.getElementById('pazienti').innerHTML = response;
+				$("#pazienti").html(response);
+				//document.getElementById('pazienti').innerHTML = response;
 				document.getElementById('pazienti'+i).innerHTML=document.getElementById('pazienti').innerHTML;
 			}
 		};//handleResponse;
@@ -156,26 +175,26 @@ function fillPazientiList(i,element) {
 	}
 }
 
-function handleResponse() {
-	if((http.readyState == 4)&&(http.status == 200)){
-		var response = http.responseText;
-		//var update = new Array();
-
-	//	if(response.indexOf('|' != -1)) {
-			//update = response.split('|');
-			//var node=response.getElementsByTagName('result');
-			//alert(node);
-			//for(var i=0;i<node.length;i++){
-			document.getElementById('result').innerHTML = response;
-		//}
-	}
-}
-var innerHTML;
-function viewNewsContent(id){
-	innerHTML=document.getElementById("result").innerHTML;
-        content=document.getElementById(id).value;
-	innerHTML=content+'<br /><center><input type="button" value="close" onclick="resetState()"/></center>';
-}
-function resetState(){
-	document.getElementById("result").innerHTML=innerHTML;
-}
+//function handleResponse() {
+//	if((http.readyState == 4)&&(http.status == 200)){
+//		var response = http.responseText;
+//		//var update = new Array();
+//
+//	//	if(response.indexOf('|' != -1)) {
+//			//update = response.split('|');
+//			//var node=response.getElementsByTagName('result');
+//			//alert(node);
+//			//for(var i=0;i<node.length;i++){
+//			document.getElementById('result').innerHTML = response;
+//		//}
+//	}
+//}
+//var innerHTML;
+//function viewNewsContent(id){
+//	innerHTML=document.getElementById("result").innerHTML;
+//        content=document.getElementById(id).value;
+//	innerHTML=content+'<br /><center><input type="button" value="close" onclick="resetState()"/></center>';
+//}
+//function resetState(){
+//	document.getElementById("result").innerHTML=innerHTML;
+//}
