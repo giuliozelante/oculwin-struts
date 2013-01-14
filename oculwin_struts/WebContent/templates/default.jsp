@@ -13,6 +13,9 @@
 	<script type="text/javascript" src="/oculwin_struts/js/utility.js">
 	<!--// AJAX utilities -->
 	</script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js">
+	<!--// jquery -->
+	</script>
 </head>
 <body>
 	<div id="wrap">

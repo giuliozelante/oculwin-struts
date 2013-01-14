@@ -118,7 +118,7 @@
 							<tbody>
 								<nested:iterate property="appuntamenti" id="app" indexId="i">
 									<tr>
-										<td id="tdPaziente${i}" onclick="javascript:fillPazientiList(${i},this)" ><span id="pden${i}"><nested:write property="pden" /></span>
+										<td id="tdPaziente${i}" onclick="javascript:fillPazientiList(${i},this)" onkeypress="javascript:fillPazientiList(${i},this)"><span id="pden${i}"><nested:write property="pden" /></span>
 											<nested:hidden property="pden" styleId="pden"/>
 											<div id="pazientiHiddenDiv${i}" style="display: none;">
 												<select name="pazienti" id="pazienti${i}" onchange="javascript:assignPaziente(this.value,${i});this.parentNode.style.display='none';"></select>
@@ -128,12 +128,12 @@
 											<span id="pnascita${i}"><fmt:formatDate value="${app.pnascita}" dateStyle="long" /></span>
 											<nested:hidden property="pnascita" styleId="pnascita"/>
 										</td>
-										<td id="tdOra${i}" onclick="javascript:document.getElementById('ora${i}').innerHTML='';document.getElementById('oraHiddenDiv${i}').style.display='block'">
+										<td id="tdOra${i}" onclick="javascript:openSelectOra(${i},this)" onkeypress="javascript:openSelectOra(${i},this)">
 											<span id="ora${i}">
 												<nested:write property="ora" />
 											</span>
 											<div id="oraHiddenDiv${i}" style="display: none">
-												<nested:select property="ora" styleId="ora${i}" onchange="javascript:document.getElementById('ora${i}').innerHTML=this.value;this.parentNode.style.display='none'">
+												<nested:select property="ora" styleId="ora${i}" onchange="javascript:assignOra(${i},this);this.parentNode.style.display='none';">
 													<html:option value="08:00">08:00</html:option>
 													<html:option value="08:30">08:30</html:option>
 													<html:option value="09:00">09:00</html:option>
