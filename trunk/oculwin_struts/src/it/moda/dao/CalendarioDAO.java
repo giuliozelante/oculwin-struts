@@ -5,6 +5,7 @@ import it.moda.dto.CalendarioDTO;
 import it.moda.dto.PazienteDTO;
 import it.moda.utils.ConnectionFactory;
 import it.moda.utils.Paginator;
+import it.moda.utils.Utils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -283,6 +284,7 @@ public class CalendarioDAO extends GenericDAO{
 				pazienteDTO.setMcod(rs.getInt("mcod"));
 				pazienteDTO.setPden(rs.getString("pden"));
 				pazienteDTO.setPnascita(rs.getDate("pnascita"));
+				pazienteDTO.setDescPnascita(rs.getDate("pnascita")!=null?Utils.formatDate(rs.getDate("pnascita")):"");
 
 				pazienti.add(pazienteDTO);
 			}

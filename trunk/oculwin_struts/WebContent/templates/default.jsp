@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
-<html:html xhtml="true">
+<html:html xhtml="true" lang="true">
 <head>
 <title>OculWin - Sistema Informativo Contabile Integrato - <tiles:getAsString name="title"/></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -10,11 +10,14 @@
 	<style type="text/css">
 		#wrap {display:table;height:100%}
 	</style><![endif]-->
+	<script type="text/javascript" src="/oculwin_struts/js/utility.js">
+	<!--// AJAX utilities -->
+	</script>
 </head>
 <body>
 	<div id="wrap">
 		<div id="header">
-			<img src="/oculwin_struts/gfx/testata.jpg" />
+			<img src="/oculwin_struts/gfx/testata.jpg" alt="testata" />
 		</div>
 		<div id="main">
 			<div id="navigation">
@@ -33,8 +36,10 @@
 	<div id="footer">
 		Copyright &copy;
 		<script type="text/javascript">
+		<!--//
 			var d = new Date();
 			document.write(d.getFullYear());
+		//-->
 		</script>
 		- Layout and graphics are exclusive properties of Mo.Da. s.r.l.
 	</div>

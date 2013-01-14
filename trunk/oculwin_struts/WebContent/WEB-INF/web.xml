@@ -29,16 +29,6 @@
 		<load-on-startup>2</load-on-startup>
 	</servlet>
 	<servlet>
-		<display-name>DWR Servlet</display-name>
-		<servlet-name>dwr-invoker</servlet-name>
-		<servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
-		<init-param>
-			<param-name>debug</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		<load-on-startup>3</load-on-startup>
-	</servlet>
-	<servlet>
 		<servlet-name>log4j-init</servlet-name>
 		<servlet-class>it.moda.utils.Log4jInit</servlet-class>
 
@@ -54,10 +44,6 @@
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>
 		<url-pattern>*.do</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>dwr-invoker</servlet-name>
-		<url-pattern>/dwr/*</url-pattern>
 	</servlet-mapping>
 
 	<!-- The Usual Welcome File List -->
