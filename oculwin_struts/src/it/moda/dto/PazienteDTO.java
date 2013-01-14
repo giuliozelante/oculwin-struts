@@ -102,6 +102,8 @@ public class PazienteDTO implements Serializable {
 
 	@Column(name="TIPO2_INT")
 	private double tipo2Int;
+	
+	private String descPnascita;
 
 	public PazienteDTO() {
 	}
@@ -400,6 +402,14 @@ public class PazienteDTO implements Serializable {
 
 	public void setTipo2Int(double tipo2Int) {
 		this.tipo2Int = tipo2Int;
+	}
+
+	public String getDescPnascita() {
+		return descPnascita;
+	}
+
+	public void setDescPnascita(String descPnascita) {
+		this.descPnascita = descPnascita;
 	}
 
 }

@@ -1,12 +1,13 @@
 package it.moda.action;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Map;
-
 import it.moda.dao.CalendarioDAO;
-import it.moda.dto.CalendarioDTO;
+import it.moda.dto.PazienteDTO;
 import it.moda.form.CalendarioForm;
+import it.moda.utils.Utils;
+
+import java.io.PrintWriter;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +24,7 @@ public class CalendarioAction extends DispatchAction{
 	public void loadListaCalendario(CalendarioForm calendarioForm,HttpServletRequest request){
 		for(Map.Entry entry : request.getParameterMap().entrySet())
 			calendarioForm.setValue((String)entry.getKey(),entry.getValue());
-		CalendarioDAO calendarioDAO = new CalendarioDAO(calendarioForm.getPaginator(),7);
+		CalendarioDAO calendarioDAO = new CalendarioDAO(calendarioForm.getPaginator(),5);
 		calendarioForm.setPaginator(calendarioDAO.getPaginator("CALENDARIO"));
 		calendarioForm.setListCalendario(calendarioDAO.findAll(calendarioForm.isFirstTime()));
 		if(calendarioForm.isFirstTime()){
@@ -58,13 +59,35 @@ public class CalendarioAction extends DispatchAction{
 		CalendarioForm calendarioForm = (CalendarioForm) form;
 		loadListaCalendario(calendarioForm,request);
 		CalendarioDAO calendarioDAO = new CalendarioDAO();
-		java.text.SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-		calendarioForm.setAppuntamenti(calendarioDAO.findByData(sdf.parse(request.getParameter("data"))));
-		calendarioForm.setPazienti(calendarioDAO.fillPazientiList());
+		calendarioForm.setAppuntamenti(calendarioDAO.findByData(Utils.parseDate(request.getParameter("data"))));
+//		calendarioForm.setPazienti(calendarioDAO.fillPazientiList());
 		
 		return (mapping.findForward("success"));
 	}
 	
+	public ActionForward fillPazientiList(ActionMapping mapping,
+			ActionForm form,
+			HttpServletRequest request,
+			HttpServletResponse response)
+					throws Exception {
+		
+		CalendarioForm calendarioForm = (CalendarioForm) form;
+		CalendarioDAO calendarioDAO = new CalendarioDAO();
+		calendarioForm.setPazienti(calendarioDAO.fillPazientiList());
+		
+			
+		response.setContentType("text/html");
+	    PrintWriter out = response.getWriter();
+//	    out.println("<select name=\"pazienti\" id=\"pazienti\" onselect=\"assignPaziente(this.value,"+request.getParameter("index")+")\">\n");
+		for (Iterator i = calendarioForm.getPazienti().iterator(); i.hasNext(); ){
+			PazienteDTO paziente = (PazienteDTO)i.next();
+			out.println("<option value=\""+paziente.getPden()+"|"+paziente.getPnascita()+"|"+paziente.getDescPnascita()+"\">"+paziente.getPden()+"|"+paziente.getDescPnascita()+"</option>\n");
+		}
+//	    out.println("</select>\n");
+	    out.flush();
+	    return null;
+		
+	}
 
 
 	public ActionForward edit(ActionMapping mapping,
