@@ -90,34 +90,7 @@
 		
 /**---------------------------Calendario.do-------------------------------*/
 var fun;
-function assignPaziente(valore,index){
-	document.getElementById("pden"+index).innerHTML=valore.split("|")[0];
-	document.getElementsByName("appuntamenti["+index+"].pden")[0].value=valore.split("|")[0];
-	
-	document.getElementById("pnascita"+index).innerHTML=valore.split("|")[2];
-	document.getElementsByName("appuntamenti["+index+"].pnascita")[0].value=valore.split("|")[1];
-	
-	document.getElementById("tdPaziente"+index).onclick=fun.onclick;
-	//document.getElementById("pazienti"+index).style.display='none';
-	
-}
-function openSelectOra(index,obj){
-	document.getElementById("ora"+index).innerHTML="";
-	document.getElementById("oraHiddenDiv"+index).style.display="block";
-	
-	fun=obj;
-	
-	obj.onclick=function(){javascript:void(0);};
-	obj.onkeypress=obj.onclick;
-}
-function assignOra(index,obj){
-	document.getElementById('ora'+index).innerHTML=obj.value;
-	
-	obj.onclick=fun.onclick;
-	obj.onkeypress=obj.onclick;
-	
-	obj.parentNode.style.display='none';
-}
+
 function createRequestObject() {
 	var ro;
 	var browser = navigator.appName;
@@ -144,36 +117,6 @@ var http = createRequestObject();
 //	http.onreadystatechange = handleResponse;
 //	http.send(null);
 //}
-
-function fillPazientiList(i,element) {
-	
-	/*var FValue=filter.value;
-	for(var i=0;i<filter.length;i++){
-		if(filter.item(i).checked){
-			FValue=filter.item(i).value;
-		}
-	}*/
-	fun=element;
-	element.onclick=function(){javascript:void(0);};
-	document.getElementById("pden"+i).innerHTML="";
-	document.getElementById('pazientiHiddenDiv'+i).style.display='block';
-	if(document.getElementById('pazienti').innerHTML.replace('\n','')==''){
-		http.open('get', 'calendario.do?method=fillPazientiList', true);
-		http.setRequestHeader('Content-Type',  "text/xml");
-		http.onreadystatechange = function foo() {
-			if((http.readyState == 4)&&(http.status == 200)){
-				var response = http.responseText;
-				$("#pazienti").html(response);
-				//document.getElementById('pazienti').innerHTML = response;
-				document.getElementById('pazienti'+i).innerHTML=document.getElementById('pazienti').innerHTML;
-			}
-		};//handleResponse;
-		http.send(null);
-	}
-	else{
-		document.getElementById('pazienti'+i).innerHTML=document.getElementById('pazienti').innerHTML;
-	}
-}
 
 //function handleResponse() {
 //	if((http.readyState == 4)&&(http.status == 200)){

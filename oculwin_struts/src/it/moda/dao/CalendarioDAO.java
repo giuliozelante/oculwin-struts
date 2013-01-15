@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -207,7 +206,7 @@ public class CalendarioDAO extends GenericDAO{
 		{
 			con=getConnection();
 
-			sb = new StringBuffer("SELECT * FROM `AGENDA DETTAGLIO` WHERE dataora = ? AND Ti_age = 'R' ORDER BY ORA ");
+			sb = new StringBuffer("SELECT *,REPLACE(ORA,'.',':') as newOra FROM `AGENDA DETTAGLIO` WHERE dataora = ? AND Ti_age = 'R' ORDER BY ORA ");
 			ptmt=con.prepareStatement(sb.toString());
 			ptmt.setDate(1, new java.sql.Date(data.getTime()));
 
@@ -221,7 +220,7 @@ public class CalendarioDAO extends GenericDAO{
 				agendaDettaglioDTO.setPden(rs.getString("pden"));
 				agendaDettaglioDTO.setPtel(rs.getString("PTEL"));
 				agendaDettaglioDTO.setDataora(rs.getDate("dataora"));
-				agendaDettaglioDTO.setOra(rs.getString("ORA"));
+				agendaDettaglioDTO.setOra(rs.getString("newOra"));
 				agendaDettaglioDTO.setNote(rs.getString("Note"));
 				agendaDettaglioDTO.setTiAge(rs.getString("Ti_age"));
 				agendaDettaglioDTO.setTiOpeAge(rs.getString("Ti_ope_age"));

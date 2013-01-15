@@ -5,6 +5,12 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html:xhtml />
+				<div id="loading" style="display: none;">
+					<iframe id="slct_blck" src="about:blank"></iframe>
+					<div class="center">
+						<html:img src="/oculwin_struts/gfx/loader.gif" alt="loading" />
+					</div>
+				</div>
 				<html:form action="/calendario" method="get">
 					<html:hidden property="firstTime"/>
 					<div class="agendaTableContainer">
@@ -27,8 +33,16 @@
 								</tr>
 							</thead>
 							<tbody>
-								<nested:iterate property="listCalendario" id="day">
-									<tr>
+								<nested:iterate property="listCalendario" id="day" indexId="i">
+								<c:choose>
+									<c:when test="${i%2 == 0 }">
+										<c:set var="row" value="odd"/>
+									</c:when>
+									<c:otherwise>
+										<c:set var="row" value="even"/>
+									</c:otherwise>
+								</c:choose>
+									<tr class="${row}">
 										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="baseMap"/>'">
 											
 											<nested:hidden property="id" />
@@ -103,37 +117,61 @@
 					<nested:notEmpty property="appuntamenti">
 					<br />
 					<h1>Appuntamenti</h1>
-					<div class="agendaTableContainer">
+					<div class="agendaTableContainer" id="divAppuntamenti">
 						<table class="simpletablestyle">
 							<thead>
 								<tr>
+									<th style="display: none;" scope="col" style="width: 5%">&#160;</th>
 									<th scope="col" style="width: 20%"><bean:message key="table.header.appuntamenti.paziente" /></th>
 									<th scope="col" style="width: 10%"><bean:message key="table.header.appuntamenti.datanascita" /></th>
 									<th scope="col" style="width: 5%"><bean:message key="table.header.appuntamenti.ora" /></th>
 									<th scope="col" style="width: 10%"><bean:message key="table.header.appuntamenti.telefono" /></th>
 									<th scope="col" style="width: 10%"><bean:message key="table.header.appuntamenti.tipoappuntamento" /></th>
-									<th scope="col" style="width: 45%"><bean:message key="table.header.appuntamenti.note" /></th>
+									<th scope="col" style="width: 40%"><bean:message key="table.header.appuntamenti.note" /></th>
 								</tr>
 							</thead>
 							<tbody>
 								<nested:iterate property="appuntamenti" id="app" indexId="i">
-									<tr>
-										<td id="tdPaziente${i}" onclick="javascript:fillPazientiList(${i},this)" onkeypress="javascript:fillPazientiList(${i},this)"><span id="pden${i}"><nested:write property="pden" /></span>
-											<nested:hidden property="pden" styleId="pden"/>
-											<div id="pazientiHiddenDiv${i}" style="display: none;">
-												<select name="pazienti" id="pazienti${i}" onchange="javascript:assignPaziente(this.value,${i});this.parentNode.style.display='none';"></select>
+							<c:choose>
+								<c:when test="${i%2 == 0 }">
+									<c:set var="row" value="odd"/>
+								</c:when>
+								<c:otherwise>
+									<c:set var="row" value="even"/>
+								</c:otherwise>
+							</c:choose>
+									<tr class="${row}">
+										<td style="display: none;"><a href="javascript:void(0);" onclick="deleteAppuntamento(${i})"><html:img src="/oculwin_struts/gfx/delete.png" alt="delete" /></a></td>
+										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);">
+											<span id="spanPden${i}"><nested:write property="pden" /></span>
+										</td>
+										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);">
+											<span id="spanPnascita${i}0"><fmt:formatDate value="${app.pnascita}" dateStyle="long" /></span>
+										</td>
+										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);">
+											<span id="spanOra${i}">
+												<nested:write property="ora" />
+											</span>
+										</td>
+										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);"><nested:write property="ptel" /></td>
+										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);"><nested:write property="tiOpeAge" /></td>
+										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);"><nested:write property="note" /></td>
+									</tr>
+									<!-- Hidden Row with Form Data -->
+									<tr class="${row}" style="display: none;">
+										<td>
+											<nested:hidden property="pden" styleId="pden${i}"/>
+											<div id="pazientiHiddenDiv${i}">
+												<select name="pazienti" id="pazienti${i}" onchange="javascript:assignPaziente(this.value,${i});"></select>
 											</div>
 										</td>
 										<td>
-											<span id="pnascita${i}"><fmt:formatDate value="${app.pnascita}" dateStyle="long" /></span>
-											<nested:hidden property="pnascita" styleId="pnascita"/>
+											<span id="spanPnascita${i}1"><fmt:formatDate value="${app.pnascita}" dateStyle="long" /></span>
+											<nested:hidden property="pnascita" styleId="pnascita${i}"/>
 										</td>
 										<td id="tdOra${i}" onclick="javascript:openSelectOra(${i},this)" onkeypress="javascript:openSelectOra(${i},this)">
-											<span id="ora${i}">
-												<nested:write property="ora" />
-											</span>
-											<div id="oraHiddenDiv${i}" style="display: none">
-												<nested:select property="ora" styleId="ora${i}" onchange="javascript:assignOra(${i},this);this.parentNode.style.display='none';">
+											<div id="oraHiddenDiv${i}">
+												<nested:select property="ora" styleId="ora${i}" onchange="javascript:assignOra(${i},this)">
 													<html:option value="08:00">08:00</html:option>
 													<html:option value="08:30">08:30</html:option>
 													<html:option value="09:00">09:00</html:option>
@@ -156,9 +194,29 @@
 												</nested:select>
 											</div>
 										</td>
-										<td><nested:write property="ptel" /></td>
-										<td><nested:write property="tiOpeAge" /></td>
-										<td><nested:write property="note" /></td>
+										<td><nested:text property="ptel" styleId="ptel${i}"/></td>
+										<td>
+											<nested:select property="tiOpeAge" styleId="tiOpeAge${i}">
+												<html:option value="A">Altro</html:option>
+												<html:option value="I">Impronta</html:option>
+												<html:option value="R">Rinnovo</html:option>
+												<html:option value="M">Modelli</html:option>
+												<html:option value="C">Controllo</html:option>
+												<html:option value="L">Lucidatura</html:option>
+											</nested:select>
+										</td>
+										<td><nested:select property="note" styleId="note${i}">
+												<html:option value="IMPRONTA">IMPRONTA</html:option>
+												<html:option value="RINNOVO">RINNOVO</html:option>
+												<html:option value="RINNOVO IN GIORNATA">RINNOVO IN GIORNATA</html:option>
+												<html:option value="CONSEGNA">CONSEGNA</html:option>
+												<html:option value="CONTROLLO">CONTROLLO</html:option>
+												<html:option value="MODIFICA">MODIFICA</html:option>
+												<html:option value="LUCIDATURA">LUCIDATURA</html:option>
+												<html:option value="SOSTITUZIONE">SOSTITUZIONE</html:option>
+												<html:option value="SPEDIZIONE">SPEDIZIONE</html:option>
+											</nested:select>
+										</td>
 									</tr>
 								</nested:iterate>
 							</tbody>
