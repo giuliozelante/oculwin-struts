@@ -78,9 +78,29 @@ function deleteAppuntamento(index){
 	if(confirm("Sei sicuro di voler eliminare l'appuntamento selezionato?"))
 		var str = $('#calendarioForm').serialize();
 		$.get("calendario.do?method=deleteAppuntamento&id="+index+"&"+str,function(response){
-			xmlDoc = $.parseXML( response ),
-		    $xml = $( xmlDoc ),
-		    $title = $xml.find( "title" );
+			xmlDoc = $.parseXML( response );
+		    $xml = $( xmlDoc );
+		    $id = $xml.find("id");
+		    $elemId = $('#divCalendario table tr').find('input[name$="id"]').find('input[value="'+id+'"]').closest("tr");
+		    $elemId.find('input[name$="festivo"]').val( $xml.find('festivo'));
+		    $elemId.find('td:eq(2)').html( $xml.find('message'));
+//			this.data = data;
+//			this.festivo = festivo;
+//			this.message = message;
+//			this.maxAgeC1 = maxAgeC1;
+//			this.maxAgeC2 = maxAgeC2;
+//			this.maxAgeRr = maxAgeRr;
+//			this.maxAgeR = maxAgeR;
+//			this.eliminato = eliminato;
+//			this.totaleR = totaleR;
+//			this.totaleRr = totaleRr;
+//			this.totaleC8 = totaleC8;
+//			this.totaleC11 = totaleC11;
+//			this.totaleI = totaleI;
+//			this.totaleM = totaleM;
+//			this.maxAgeB = maxAgeB;
+//			this.totaleB = totaleB;
+//		    $title = $xml.find( "title" );
 		});
 //		alert("OK");
 	$('img[alt="loading"]').show();
