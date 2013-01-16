@@ -34,13 +34,16 @@ function fillPazientiList(index,element) {
 //		$("#pazienti"+i).html($("#pazienti").html());
 //	}
 //};
-function assignPaziente(valore,index){
-	$("#spanPden"+index).html(valore.split("|")[0]);
-	$("#pden"+index).val(valore.split("|")[0]);
+function assignPaziente(element,index){
+//	element.parentNode.parentNode.style.background="#f00";
+//	element.parentNode.parentNode.nextElementSibling.style.background="#f00";
 	
-	$("#spanPnascita"+index+"0").html(valore.split("|")[2]);
-	$("#spanPnascita"+index+"1").html(valore.split("|")[2]);
-	$("#pnascita"+index).val(valore.split("|")[1]);
+	$("#spanPden"+index).html($(element).val().split("|")[0]);
+	$("#pden"+index).val($(element).val().split("|")[0]);
+	
+	$("#spanPnascita"+index+"0").html($(element).val().split("|")[2]);
+	$("#spanPnascita"+index+"1").html($(element).val().split("|")[2]);
+	$("#pnascita"+index).val($(element).val().split("|")[1]);
 	
 //	$(elem).show();
 //	$(elem).next("tr").hide();
@@ -62,9 +65,10 @@ function openSelectOra(index,obj){
 }
 function assignOra(index,obj){
 	$("#ora"+index).html($(obj).val);
+//	obj.parentNode.parentNode.style.background="#f00";
 }
 $(document).ready(function(){
-	$("div#divAppuntamenti tbody tr").hover(function() {
-		$(this).first("td").show();
+	$('div#divAppuntamenti select, div#divAppuntamenti input[type="text"], div#divAppuntamenti input[type="hidden"]').on("change",function() {
+		$(this).closest('td').css("background","#CFB");
 	});
 });

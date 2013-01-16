@@ -37,6 +37,7 @@ body {
 	font-family: arial, sans-serif;
 	font-size: 76%
 }
+select,input{font-family: arial, sans-serif;font-size: 11px;}
 /*div#container{width:expression(document.body.clientwidth < 600 ? “600px” : “auto” );}*/
 
 /*stili generici, su header e footer*/
