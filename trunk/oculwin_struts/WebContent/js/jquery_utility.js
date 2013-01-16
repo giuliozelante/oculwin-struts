@@ -37,13 +37,18 @@ function fillPazientiList(index,element) {
 function assignPaziente(element,index){
 //	element.parentNode.parentNode.style.background="#f00";
 //	element.parentNode.parentNode.nextElementSibling.style.background="#f00";
+	var pden=$(element).val().split("|")[0];
+	var pnascita=$(element).val().split("|")[1];
+	var formattedPnascita=$(element).val().split("|")[2];
 	
-	$("#spanPden"+index).html($(element).val().split("|")[0]);
-	$("#pden"+index).val($(element).val().split("|")[0]);
+//	$(element).append("<option value=\""+pden+"\">"+pden+"</option>");
+//	$(element option:eq(3)).attr('selected', 'selected')
 	
-	$("#spanPnascita"+index+"0").html($(element).val().split("|")[2]);
-	$("#spanPnascita"+index+"1").html($(element).val().split("|")[2]);
-	$("#pnascita"+index).val($(element).val().split("|")[1]);
+	$("#spanPden"+index).html(pden);
+	$("#pden"+index).val(pden);
+	
+	$("#spanPnascita"+index).html(formattedPnascita);
+	$("#pnascita"+index).val(pnascita);
 	
 //	$(elem).show();
 //	$(elem).next("tr").hide();
@@ -67,8 +72,32 @@ function assignOra(index,obj){
 	$("#ora"+index).html($(obj).val);
 //	obj.parentNode.parentNode.style.background="#f00";
 }
+function deleteAppuntamento(index){
+	$("#loading").show();
+	$('img[alt="loading"]').hide();
+	if(confirm("Sei sicuro di voler eliminare l'appuntamento selezionato?"))
+		var str = $('#calendarioForm').serialize();
+		$.get("calendario.do?method=deleteAppuntamento&id="+index+"&"+str,function(response){
+			xmlDoc = $.parseXML( response ),
+		    $xml = $( xmlDoc ),
+		    $title = $xml.find( "title" );
+		});
+//		alert("OK");
+	$('img[alt="loading"]').show();
+	$("#loading").hide();
+}
+
+/** ----------------------Functions Assigned at page LOAD ---------------------*/
 $(document).ready(function(){
-	$('div#divAppuntamenti select, div#divAppuntamenti input[type="text"], div#divAppuntamenti input[type="hidden"]').on("change",function() {
+	$('div#divAppuntamenti select').on("change",function() {
 		$(this).closest('td').css("background","#CFB");
+		$(this).closest('td').next().find('input[name$="pnascita"]').closest('td').css("background","#CFB");
+		$(this).closest('td').nextAll().find('img[alt="salva"]').css("visibility","visible");
+		$('div#divAppuntamenti tfoot input').css("visibility","visible");
+	});
+	$('div#divAppuntamenti input[type="text"]').on("keyup",function() {
+		$(this).closest('td').css("background","#CFB");
+		$(this).closest('td').nextAll().find('img[alt="salva"]').css("visibility","visible");
+		$('div#divAppuntamenti tfoot input').css("visibility","visible");
 	});
 });

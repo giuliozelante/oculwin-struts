@@ -1,17 +1,21 @@
 package it.moda.action;
 
+import it.moda.bean.AgendaDettaglioBean;
 import it.moda.dao.CalendarioDAO;
+import it.moda.dto.AgendaDettaglioDTO;
+import it.moda.dto.CalendarioDTO;
 import it.moda.dto.PazienteDTO;
 import it.moda.form.CalendarioForm;
 import it.moda.utils.Utils;
 
 import java.io.PrintWriter;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBContext;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -22,8 +26,8 @@ public class CalendarioAction extends DispatchAction{
 	private static Logger log = Logger.getLogger(CalendarioAction.class);
 
 	public void loadListaCalendario(CalendarioForm calendarioForm,HttpServletRequest request){
-		for(Map.Entry entry : request.getParameterMap().entrySet())
-			calendarioForm.setValue((String)entry.getKey(),entry.getValue());
+//		for(Map.Entry entry : request.getParameterMap().entrySet())
+//			calendarioForm.setValue((String)entry.getKey(),entry.getValue());
 		CalendarioDAO calendarioDAO = new CalendarioDAO(calendarioForm.getPaginator(),5);
 		calendarioForm.setPaginator(calendarioDAO.getPaginator("CALENDARIO"));
 		calendarioForm.setListCalendario(calendarioDAO.findAll(calendarioForm.isFirstTime()));
@@ -59,7 +63,8 @@ public class CalendarioAction extends DispatchAction{
 		CalendarioForm calendarioForm = (CalendarioForm) form;
 		loadListaCalendario(calendarioForm,request);
 		CalendarioDAO calendarioDAO = new CalendarioDAO();
-		calendarioForm.setAppuntamenti(calendarioDAO.findByData(Utils.parseDate(request.getParameter("data"))));
+		calendarioForm.setAppuntamenti(calendarioDAO.findByData(Utils.parseDate(calendarioForm.getData())));
+		
 //		calendarioForm.setPazienti(calendarioDAO.fillPazientiList());
 		
 		return (mapping.findForward("success"));
@@ -108,13 +113,27 @@ public class CalendarioAction extends DispatchAction{
 		return (mapping.findForward("success"));
 
 	}
-	public ActionForward delete(ActionMapping mapping,
+	public ActionForward deleteAppuntamento(ActionMapping mapping,
 			ActionForm form,
 			HttpServletRequest request,
 			HttpServletResponse response)
 					throws Exception {
+		CalendarioForm calendarioForm = (CalendarioForm) form;
+		CalendarioDAO calendarioDAO = new CalendarioDAO();
+		AgendaDettaglioBean appuntamentoBean = new AgendaDettaglioBean();
+		appuntamentoBean = (AgendaDettaglioBean)calendarioForm.getAppuntamenti().get(Integer.parseInt(request.getParameter("id")));
+		
+		CalendarioDTO calendarioDTO = calendarioDAO.deleteAppuntamento(Utils.parseDate(calendarioForm.getData()),appuntamentoBean);
 
-		return (mapping.findForward("success"));
+		JAXBContext jc = JAXBContext.newInstance(CalendarioDTO.class);
+		String xml = Utils.marshall(jc, calendarioDTO);
+		
+		response.setContentType("text/xml");
+	    PrintWriter out = response.getWriter();
+	    out.println(xml);
+	    out.flush();
+	    
+		return (null);
 
 	}
 
