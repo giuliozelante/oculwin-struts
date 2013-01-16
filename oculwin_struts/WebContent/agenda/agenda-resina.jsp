@@ -13,6 +13,7 @@
 				</div>
 				<html:form action="/calendario" method="get">
 					<html:hidden property="firstTime"/>
+					<html:hidden property="data"/>
 					<div class="agendaTableContainer">
 						<table class="simpletablestyle">
 							<thead>
@@ -145,7 +146,7 @@
 											<span id="spanPden${i}"><nested:write property="pden" /></span>
 										</td>
 										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);">
-											<span id="spanPnascita${i}0"><fmt:formatDate value="${app.pnascita}" dateStyle="long" /></span>
+											<span id="spanPnascita${i}"><fmt:formatDate value="${app.datePnascita}" dateStyle="long" /></span>
 										</td>
 										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);">
 											<span id="spanOra${i}">
@@ -161,13 +162,13 @@
 									<tr class="${row}" style="display: none;">
 										<td>
 											<nested:hidden property="pden" styleId="pden${i}"/>
+											<nested:hidden property="pgAge" styleId="pgAge${i}"/>
 											<div id="pazientiHiddenDiv${i}">
 												<select name="pazienti" id="pazienti${i}" onchange="javascript:assignPaziente(this,${i});"></select>
 											</div>
 										</td>
 										<td>
-											<span id="spanPnascita${i}1"><fmt:formatDate value="${app.pnascita}" dateStyle="long" /></span>
-											<nested:hidden property="pnascita" styleId="pnascita${i}"/>
+											<nested:text property="pnascita" styleId="pnascita${i}" readonly="true"/>
 										</td>
 										<td id="tdOra${i}" onclick="javascript:openSelectOra(${i},this)" onkeypress="javascript:openSelectOra(${i},this)">
 											<div id="oraHiddenDiv${i}">
@@ -217,15 +218,36 @@
 												<html:option value="SPEDIZIONE">SPEDIZIONE</html:option>
 											</nested:select>
 										</td>
-										<td><a href="javascript:void(0);" onclick="acceptChangesAppuntamento(${i})"><html:img src="/oculwin_struts/gfx/accept.png" alt="accept" /></a></td>
+										<td><a href="javascript:void(0);" onclick="saveChangesAppuntamento(${i})"><img src="/oculwin_struts/gfx/save_16.gif" alt="salva" style="visibility: hidden;"/></a></td>
 									</tr>
 								</nested:iterate>
 							</tbody>
+							<tfoot>
+								<tr>
+									<th colspan="7">
+										<div style="width: 100%;text-align: center;white-space: nowrap;position: relative;">
+											<div style="margin:0 auto;">
+											<input type="button" onclick="saveAll()" value="<bean:message key="button.label.saveAll"/>" style="visibility: hidden"/>
+											&nbsp;
+											<html:reset onclick="resetAll()" style="visibility:hidden"><bean:message key="button.label.reset"/></html:reset>
+											</div>
+											
+											<div style="position: absolute;white-space: nowrap;right:0;bottom: 2px;">
+												<a href="javascript:void(0);" onclick="insertNewAppuntamento()">
+													<html:img src="/oculwin_struts/gfx/plus_16.png" style="vertical-align: middle;"/>
+													Aggiungi Nuovo Appuntamento
+												</a>
+											</div>
+											</div>
+									</th>
+								</tr>
+							</tfoot>
 						</table>
 					</div>
 					<div id="pazientiHiddenDiv" style="display: none;">
 						<select name="pazienti" id="pazienti">
 						</select>
 					</div>
+					
 					</nested:notEmpty>
 				</html:form>

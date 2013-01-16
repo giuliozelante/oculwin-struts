@@ -1,8 +1,8 @@
 package it.moda.form;
 
-import it.moda.dto.AgendaDettaglioDTO;
+import it.moda.bean.AgendaDettaglioBean;
+import it.moda.bean.PazienteBean;
 import it.moda.dto.CalendarioDTO;
-import it.moda.dto.PazienteDTO;
 import it.moda.utils.Paginator;
 
 import java.util.ArrayList;
@@ -17,10 +17,11 @@ import org.apache.struts.action.ActionMapping;
 @SuppressWarnings("serial")
 public class CalendarioForm extends BaseForm {
 	private List<CalendarioDTO> listCalendario;
-	private List<AgendaDettaglioDTO> appuntamenti;
+	private List<AgendaDettaglioBean> appuntamenti;
 	private Paginator paginator;
 	private boolean firstTime;
-	private List<PazienteDTO> pazienti;
+	private List<PazienteBean> pazienti;
+	private String data;
 //	private Integer id;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 	//	private Date data;
@@ -154,17 +155,18 @@ public class CalendarioForm extends BaseForm {
 		this.appuntamenti = ListUtils.lazyList(new ArrayList(),
 		        new Factory() {
 		            public Object create() {
-		                return new AgendaDettaglioDTO();
+		                return new AgendaDettaglioBean();
 		            }
 		        });
 		this.pazienti = ListUtils.lazyList(new ArrayList(),
 		        new Factory() {
 		            public Object create() {
-		                return new PazienteDTO();
+		                return new PazienteBean();
 		            }
 		        });
 		this.paginator = new Paginator();
 		this.setFirstTime(true);
+//		this.setValue("data", this.data);
 //		this.id = null;
 //		this.data = new Date();
 //		this.festivo = false;
@@ -201,16 +203,22 @@ public class CalendarioForm extends BaseForm {
 	public void setFirstTime(boolean firstTime) {
 		this.firstTime = firstTime;
 	}
-	public List<AgendaDettaglioDTO> getAppuntamenti() {
+	public List<AgendaDettaglioBean> getAppuntamenti() {
 		return appuntamenti;
 	}
-	public void setAppuntamenti(List<AgendaDettaglioDTO> appuntamenti) {
+	public void setAppuntamenti(List<AgendaDettaglioBean> appuntamenti) {
 		this.appuntamenti = appuntamenti;
 	}
-	public List<PazienteDTO> getPazienti() {
+	public List<PazienteBean> getPazienti() {
 		return pazienti;
 	}
-	public void setPazienti(List<PazienteDTO> pazienti) {
+	public void setPazienti(List<PazienteBean> pazienti) {
 		this.pazienti = pazienti;
+	}
+	public String getData() {
+		return data;
+	}
+	public void setData(String data) {
+		this.data = data;
 	}
 }
