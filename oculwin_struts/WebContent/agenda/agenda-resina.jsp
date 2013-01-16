@@ -14,7 +14,7 @@
 				<html:form action="/calendario" method="get">
 					<html:hidden property="firstTime"/>
 					<html:hidden property="data"/>
-					<div class="agendaTableContainer">
+					<div class="agendaTableContainer" id="divCalendario">
 						<table class="simpletablestyle">
 							<thead>
 								<tr>
@@ -50,8 +50,12 @@
 											<fmt:formatDate value="${day.data}" dateStyle="full" />
 											<!-- <nested:write property="data" /> -->
 										</td>
-										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="baseMap"/>'"><nested:checkbox property="festivo" disabled="true" /></td>
-										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="baseMap"/>'"><nested:write property="message" /></td>
+										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="baseMap"/>'">
+											<nested:checkbox property="festivo" disabled="true" />
+										</td>
+										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="baseMap"/>'">
+											<nested:write property="message" />
+										</td>
 										<!-- =IIf((([Max_age_R]-[Num_app]>0 Or IsNull([Max_age_R]-[Num_app])) And [festivo]=0);"DISP";"COMP") -->
 										<c:choose>
 											<c:when test="${(day.maxAgeR-day.totaleI) > 0 && !day.festivo }">
