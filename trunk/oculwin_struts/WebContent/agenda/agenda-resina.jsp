@@ -121,13 +121,13 @@
 						<table class="simpletablestyle">
 							<thead>
 								<tr>
-									<th style="display: none;" scope="col" style="width: 5%">&#160;</th>
 									<th scope="col" style="width: 20%"><bean:message key="table.header.appuntamenti.paziente" /></th>
 									<th scope="col" style="width: 10%"><bean:message key="table.header.appuntamenti.datanascita" /></th>
 									<th scope="col" style="width: 5%"><bean:message key="table.header.appuntamenti.ora" /></th>
 									<th scope="col" style="width: 10%"><bean:message key="table.header.appuntamenti.telefono" /></th>
 									<th scope="col" style="width: 10%"><bean:message key="table.header.appuntamenti.tipoappuntamento" /></th>
-									<th scope="col" style="width: 40%"><bean:message key="table.header.appuntamenti.note" /></th>
+									<th scope="col" style="width: 54%"><bean:message key="table.header.appuntamenti.note" /></th>
+									<th scope="col" style="width: 1%">&#160;</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -141,7 +141,6 @@
 								</c:otherwise>
 							</c:choose>
 									<tr class="${row}">
-										<td style="display: none;"><a href="javascript:void(0);" onclick="deleteAppuntamento(${i})"><html:img src="/oculwin_struts/gfx/delete.png" alt="delete" /></a></td>
 										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);">
 											<span id="spanPden${i}"><nested:write property="pden" /></span>
 										</td>
@@ -156,13 +155,14 @@
 										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);"><nested:write property="ptel" /></td>
 										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);"><nested:write property="tiOpeAge" /></td>
 										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);"><nested:write property="note" /></td>
+										<td><a href="javascript:void(0);" onclick="deleteAppuntamento(${i})"><html:img src="/oculwin_struts/gfx/delete.png" alt="delete" /></a></td>
 									</tr>
 									<!-- Hidden Row with Form Data -->
 									<tr class="${row}" style="display: none;">
 										<td>
 											<nested:hidden property="pden" styleId="pden${i}"/>
 											<div id="pazientiHiddenDiv${i}">
-												<select name="pazienti" id="pazienti${i}" onchange="javascript:assignPaziente(this.value,${i});"></select>
+												<select name="pazienti" id="pazienti${i}" onchange="javascript:assignPaziente(this,${i});"></select>
 											</div>
 										</td>
 										<td>
@@ -217,6 +217,7 @@
 												<html:option value="SPEDIZIONE">SPEDIZIONE</html:option>
 											</nested:select>
 										</td>
+										<td><a href="javascript:void(0);" onclick="acceptChangesAppuntamento(${i})"><html:img src="/oculwin_struts/gfx/accept.png" alt="accept" /></a></td>
 									</tr>
 								</nested:iterate>
 							</tbody>
