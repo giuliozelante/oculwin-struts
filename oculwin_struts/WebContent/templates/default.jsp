@@ -21,6 +21,31 @@
 	</script>
 </head>
 <body>
+	<div id="loading" style="display: none;">
+		<iframe id="slct_blck" src="about:blank"></iframe>
+		<div class="center">
+			<html:img src="/oculwin_struts/gfx/loader.gif" alt="loading" />
+		</div>
+	</div>
+	<div class="info message">
+		 <h3></h3>
+		 <p></p>
+		</div>
+		
+		<div class="error message">
+			 <h3>E' avvenuto un'errore</h3>
+			 <p></p>
+		</div>
+		
+		<div class="warning message">
+			 <h3>Attenzione!</h3>
+			 <p></p>
+		</div>
+		
+		<div class="success message">
+			 <h3>Ce l'hai fatta!</h3>
+			 <p></p>
+		</div>
 	<div id="wrap">
 		<div id="header">
 			<img src="/oculwin_struts/gfx/testata.jpg" alt="testata" />

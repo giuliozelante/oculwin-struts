@@ -2,20 +2,19 @@ package it.moda.action;
 
 import it.moda.bean.AgendaDettaglioBean;
 import it.moda.dao.CalendarioDAO;
-import it.moda.dto.AgendaDettaglioDTO;
 import it.moda.dto.CalendarioDTO;
 import it.moda.dto.PazienteDTO;
 import it.moda.form.CalendarioForm;
 import it.moda.utils.Utils;
 
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -25,7 +24,7 @@ import org.apache.struts.actions.DispatchAction;
 public class CalendarioAction extends DispatchAction{
 	private static Logger log = Logger.getLogger(CalendarioAction.class);
 
-	public void loadListaCalendario(CalendarioForm calendarioForm,HttpServletRequest request){
+	public void loadListaCalendario(CalendarioForm calendarioForm,HttpServletRequest request) throws SQLException{
 //		for(Map.Entry entry : request.getParameterMap().entrySet())
 //			calendarioForm.setValue((String)entry.getKey(),entry.getValue());
 		CalendarioDAO calendarioDAO = new CalendarioDAO(calendarioForm.getPaginator(),5);

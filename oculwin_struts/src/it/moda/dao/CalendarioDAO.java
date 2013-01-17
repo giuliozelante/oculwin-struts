@@ -37,7 +37,7 @@ public class CalendarioDAO extends GenericDAO{
 
 
 
-	public Paginator getPaginator(String table){
+	public Paginator getPaginator(String table) throws SQLException{
 		try{
 			StringBuffer sb;
 			con=getConnection();
@@ -50,7 +50,7 @@ public class CalendarioDAO extends GenericDAO{
 		}
 		catch(SQLException e)
 		{
-			log.error(e.getMessage(),e);
+			throw e;
 		}
 		finally
 		{
@@ -65,18 +65,18 @@ public class CalendarioDAO extends GenericDAO{
 			}
 			catch(SQLException e)
 			{
-				log.error(e.getMessage(),e);
+				throw e;
 			}
 			catch(Exception e)
 			{
-				log.error(e.getMessage(),e);
+				throw e;
 			}
 
 		}
 		return new Paginator(this.getPaginator().getPage(), this.getPaginator().getRowNums(), this.getPaginator().getTotRows());
 	}
 
-	public List<CalendarioDTO> findAll(boolean firstTime)
+	public List<CalendarioDTO> findAll(boolean firstTime) throws SQLException
 	{
 		List<CalendarioDTO> appuntamenti=new ArrayList<CalendarioDTO>();
 		CalendarioDTO calendarioDTO=null;
@@ -116,7 +116,7 @@ public class CalendarioDAO extends GenericDAO{
 		}
 		catch(SQLException e)
 		{
-			log.error(e.getMessage(),e);
+			throw e;
 		}
 		finally
 		{
@@ -131,18 +131,18 @@ public class CalendarioDAO extends GenericDAO{
 			}
 			catch(SQLException e)
 			{
-				log.error(e.getMessage(),e);
+				throw e;
 			}
 			catch(Exception e)
 			{
-				log.error(e.getMessage(),e);
+				throw e;
 			}
 
 		}
 		return appuntamenti;
 	}
 
-	public List<AgendaDettaglioBean> findByData(Date data){
+	public List<AgendaDettaglioBean> findByData(Date data) throws SQLException{
 		//SELECT [Agenda Dettaglio].mcod, [Agenda Dettaglio].dataora, [Agenda Dettaglio].Note, [Agenda Dettaglio].ORA, [Agenda Dettaglio].Ti_age, [Agenda Dettaglio].Ti_ope_age, [Agenda Dettaglio].PTEL, [Agenda Dettaglio].Visita, [Agenda Dettaglio].pden, [Agenda Dettaglio].Pg_age, [Agenda Dettaglio].pnascita
 		//		FROM [Agenda Dettaglio]
 		//				WHERE ((([Agenda Dettaglio].dataora)=[Forms]![Agenda Resina]![Sottomaschera Agenda resina].[Form]![Data]) AND (([Agenda Dettaglio].Ti_age)="R"))
@@ -190,7 +190,7 @@ public class CalendarioDAO extends GenericDAO{
 		}
 		catch(SQLException e)
 		{
-			log.error(e.getMessage(),e);
+			throw e;
 		}
 		finally
 		{
@@ -205,11 +205,11 @@ public class CalendarioDAO extends GenericDAO{
 			}
 			catch(SQLException e)
 			{
-				log.error(e.getMessage(),e);
+				throw e;
 			}
 			catch(Exception e)
 			{
-				log.error(e.getMessage(),e);
+				throw e;
 			}
 
 		}
@@ -217,7 +217,7 @@ public class CalendarioDAO extends GenericDAO{
 
 	}
 
-	public List<PazienteBean> fillPazientiList(){
+	public List<PazienteBean> fillPazientiList() throws SQLException{
 		//		SELECT [03OIPAZI].MCOD, [03OIPAZI].PDEN, [03OIPAZI].PNASCITA
 		//		FROM 03OIPAZI
 		//		ORDER BY [03OIPAZI].PDEN, [03OIPAZI].PNASCITA;
@@ -248,7 +248,7 @@ public class CalendarioDAO extends GenericDAO{
 			
 		}catch(SQLException e)
 		{
-			log.error(e.getMessage(),e);
+			throw e;
 		}
 		finally
 		{
@@ -263,11 +263,11 @@ public class CalendarioDAO extends GenericDAO{
 			}
 			catch(SQLException e)
 			{
-				log.error(e.getMessage(),e);
+				throw e;
 			}
 			catch(Exception e)
 			{
-				log.error(e.getMessage(),e);
+				throw e;
 			}
 
 		}
@@ -352,92 +352,32 @@ public class CalendarioDAO extends GenericDAO{
  * @param data
  * @param appuntamento
  * @return
+ * @throws Exception 
  */
-	public CalendarioDTO deleteAppuntamento(Date data,AgendaDettaglioBean appuntamento){
+	public CalendarioDTO deleteAppuntamento(Date data,AgendaDettaglioBean appuntamento) throws Exception{
 		CalendarioDTO calendarioDTO = null;
 		StringBuffer sb = null;
-		int result; 
+		int result = 0; 
 		try{
 			con=getConnection();
 			con.setAutoCommit(false);
-			sb = new StringBuffer("SELECT * FROM CALENDARIO WHERE DATA = ?");
-			ptmt=con.prepareStatement(sb.toString());
-			ptmt.setDate(1, new java.sql.Date(data.getTime()));
-			rs=ptmt.executeQuery();
-			if(rs.next()){
-				calendarioDTO=new CalendarioDTO();
-				calendarioDTO.setId        (rs.getInt("ID"));
-				calendarioDTO.setData      (rs.getDate("Data"));
-				calendarioDTO.setFestivo   (rs.getBoolean("Festivo"));
-				calendarioDTO.setMessage   (rs.getString("Message"));
-				calendarioDTO.setMaxAgeC1  (rs.getInt("Max_age_C1"));
-				calendarioDTO.setMaxAgeC2  (rs.getInt("Max_age_C2"));
-				calendarioDTO.setMaxAgeRr  (rs.getInt("Max_age_RR"));
-				calendarioDTO.setMaxAgeR   (rs.getInt("Max_age_R"));
-				calendarioDTO.setEliminato (rs.getBoolean("Eliminato"));
-				calendarioDTO.setTotaleR   (rs.getInt("Totale_R"));
-				calendarioDTO.setTotaleRr  (rs.getInt("Totale_RR"));
-				calendarioDTO.setTotaleC8  (rs.getInt("Totale_c8"));
-				calendarioDTO.setTotaleC11 (rs.getInt("Totale_c11"));
-				calendarioDTO.setTotaleI   (rs.getInt("Totale_I"));
-				calendarioDTO.setTotaleM   (rs.getInt("Totale_M"));
-				calendarioDTO.setMaxAgeB   (rs.getInt("Max_Age_B"));
-				calendarioDTO.setTotaleB   (rs.getInt("Totale_B"));
-			}
-			int eta=Utils.calculateAge((Utils.parseDate(appuntamento.getPnascita())));
-			switch (appuntamento.getTiOpeAge()) {
-				case "I":
-					calendarioDTO.setTotaleI(calendarioDTO.getTotaleI().intValue()!=0?calendarioDTO.getTotaleI().intValue()-1:0);
-					if(eta<=Utils.ETA)
-						calendarioDTO.setTotaleB(calendarioDTO.getTotaleB().intValue()!=0?calendarioDTO.getTotaleB().intValue()-1:0);
-						
-					break;
-				case "R":
-					calendarioDTO.setTotaleRr(calendarioDTO.getTotaleRr().intValue()!=0?calendarioDTO.getTotaleRr().intValue()-1:0);
-					if(eta<=Utils.ETA)
-						calendarioDTO.setTotaleB(calendarioDTO.getTotaleB().intValue()!=0?calendarioDTO.getTotaleB().intValue()-1:0);
-					break;
-				case "M":
-					calendarioDTO.setTotaleM(calendarioDTO.getTotaleM().intValue()!=0?calendarioDTO.getTotaleM().intValue()-1:0);
-					break;
-					
-				default:
-					calendarioDTO.setTotaleR(calendarioDTO.getTotaleR().intValue()!=0?calendarioDTO.getTotaleR().intValue()-1:0);
-					break;
-			}
-			//XXX:Aggiorno il Calendario
-			sb = new StringBuffer();
-			sb.append("UPDATE calendario ");
-			sb.append("SET    totale_i = ?, ");
-			sb.append("       totale_rr = ?, ");
-			sb.append("       totale_m = ?, ");
-			sb.append("       totale_r = ?, ");
-			sb.append("       totale_b = ? ");
-			sb.append("WHERE  data = ? ");
-			
-			ptmt=con.prepareStatement(sb.toString());
-			ptmt.setInt(1, calendarioDTO.getTotaleI());
-			ptmt.setInt(2, calendarioDTO.getTotaleRr());
-			ptmt.setInt(3, calendarioDTO.getTotaleM());
-			ptmt.setInt(4, calendarioDTO.getTotaleR());
-			ptmt.setInt(5, calendarioDTO.getTotaleB());
-			ptmt.setDate(6, new java.sql.Date(data.getTime()));
-			result = ptmt.executeUpdate();
-			if(result==0)
-				throw new Exception("Update Failed");
+			//XXX:Aggiorno il calendario
+			aggiornaCalendario(calendarioDTO, sb, data, appuntamento, result, ptmt);
 			
 			//XXX:Cancello l'appuntamento (LOGICAMENTE non FISICAMENTE)
+			con.setAutoCommit(false);
 			sb = new StringBuffer();
 			sb.append("UPDATE `agenda dettaglio` ");
-			sb.append("SET    deleted = ( 1 ) ");
+			sb.append("SET    deleted = ? ");
 			sb.append("WHERE  pg_age = ? ");
-			ptmt.setInt(1, appuntamento.getPgAge());
+			ptmt=con.prepareStatement(sb.toString());
+			ptmt.setBoolean(1, true);
+			ptmt.setInt(2, appuntamento.getPgAge());
 			result = ptmt.executeUpdate();
 			if(result==0)
 				throw new Exception("Logical Delete Failed");
 			con.commit();
 		}catch(Exception e){
-			log.error(e.getMessage(),e);
 			if(con!=null){
 				try{
 					if(con!=null){
@@ -446,13 +386,14 @@ public class CalendarioDAO extends GenericDAO{
 				}
 				catch(SQLException ex)
 				{
-					log.error(ex.getMessage(),ex);
+					throw ex;
 				}
 				catch(Exception ex)
 				{
-					log.error(ex.getMessage(),ex);
+					throw ex;
 				}
 			}
+			throw e;
 		}finally{
 			try{
 				if(rs!=null)
@@ -464,11 +405,11 @@ public class CalendarioDAO extends GenericDAO{
 			}
 			catch(SQLException e)
 			{
-				log.error(e.getMessage(),e);
+				throw e;
 			}
 			catch(Exception e)
 			{
-				log.error(e.getMessage(),e);
+				throw e;
 			}
 
 		}
@@ -500,7 +441,7 @@ public class CalendarioDAO extends GenericDAO{
 	//		}
 	//		catch(SQLException e)
 	//		{
-	//			log.error(e.getMessage(),e);
+	//			throw e;
 	//		}
 	//		finally
 	//		{
@@ -515,11 +456,11 @@ public class CalendarioDAO extends GenericDAO{
 	//			}
 	//			catch(SQLException e)
 	//			{
-	//				log.error(e.getMessage(),e);
+	//				throw e;
 	//			}
 	//			catch(Exception e)
 	//			{
-	//				log.error(e.getMessage(),e);
+	//				throw e;
 	//			}
 	//
 	//		}
@@ -549,7 +490,7 @@ public class CalendarioDAO extends GenericDAO{
 	//		}
 	//		catch(SQLException e)
 	//		{
-	//			log.error(e.getMessage(),e);
+	//			throw e;
 	//		}
 	//		finally
 	//		{
@@ -564,11 +505,11 @@ public class CalendarioDAO extends GenericDAO{
 	//			}
 	//			catch(SQLException e)
 	//			{
-	//				log.error(e.getMessage(),e);
+	//				throw e;
 	//			}
 	//			catch(Exception e)
 	//			{
-	//				log.error(e.getMessage(),e);
+	//				throw e;
 	//			}
 	//
 	//		}
@@ -594,7 +535,7 @@ public class CalendarioDAO extends GenericDAO{
 	//		}
 	//		catch(SQLException e)
 	//		{
-	//			log.error(e.getMessage(),e);
+	//			throw e;
 	//		}
 	//		finally
 	//		{
@@ -609,16 +550,86 @@ public class CalendarioDAO extends GenericDAO{
 	//			}
 	//			catch(SQLException e)
 	//			{
-	//				log.error(e.getMessage(),e);
+	//				throw e;
 	//			}
 	//			catch(Exception e)
 	//			{
-	//				log.error(e.getMessage(),e);
+	//				throw e;
 	//			}
 	//
 	//		}
 	//
 	//	}
 	//
+	private void aggiornaCalendario(CalendarioDTO calendarioDTO, StringBuffer sb,Date data,AgendaDettaglioBean appuntamento,int result,PreparedStatement ptmt) throws Exception {
+		sb = new StringBuffer("SELECT * FROM CALENDARIO WHERE DATA = ?");
+		ptmt=con.prepareStatement(sb.toString());
+		ptmt.setDate(1, new java.sql.Date(data.getTime()));
+		rs=ptmt.executeQuery();
+		if(rs.next()){
+			calendarioDTO=new CalendarioDTO();
+			calendarioDTO.setId        (rs.getInt("ID"));
+			calendarioDTO.setData      (rs.getDate("Data"));
+			calendarioDTO.setFestivo   (rs.getBoolean("Festivo"));
+			calendarioDTO.setMessage   (rs.getString("Message"));
+			calendarioDTO.setMaxAgeC1  (rs.getInt("Max_age_C1"));
+			calendarioDTO.setMaxAgeC2  (rs.getInt("Max_age_C2"));
+			calendarioDTO.setMaxAgeRr  (rs.getInt("Max_age_RR"));
+			calendarioDTO.setMaxAgeR   (rs.getInt("Max_age_R"));
+			calendarioDTO.setEliminato (rs.getBoolean("Eliminato"));
+			calendarioDTO.setTotaleR   (rs.getInt("Totale_R"));
+			calendarioDTO.setTotaleRr  (rs.getInt("Totale_RR"));
+			calendarioDTO.setTotaleC8  (rs.getInt("Totale_c8"));
+			calendarioDTO.setTotaleC11 (rs.getInt("Totale_c11"));
+			calendarioDTO.setTotaleI   (rs.getInt("Totale_I"));
+			calendarioDTO.setTotaleM   (rs.getInt("Totale_M"));
+			calendarioDTO.setMaxAgeB   (rs.getInt("Max_Age_B"));
+			calendarioDTO.setTotaleB   (rs.getInt("Totale_B"));
+		}
+		//XXX:Aggiorno il Calendario
+		int eta=Utils.calculateAge((Utils.parseDate(appuntamento.getPnascita())));
+		switch (appuntamento.getTiOpeAge()) {
+			case "I":
+				calendarioDTO.setTotaleI(Integer.valueOf(calendarioDTO.getTotaleI().intValue()!=0?calendarioDTO.getTotaleI().intValue()-1:0));
+				if(eta<=Utils.ETA)
+					calendarioDTO.setTotaleB(Integer.valueOf(calendarioDTO.getTotaleB().intValue()!=0?calendarioDTO.getTotaleB().intValue()-1:0));
+					
+				break;
+			case "R":
+				calendarioDTO.setTotaleRr(Integer.valueOf(calendarioDTO.getTotaleRr().intValue()!=0?calendarioDTO.getTotaleRr().intValue()-1:0));
+				if(eta<=Utils.ETA)
+					calendarioDTO.setTotaleB(Integer.valueOf(calendarioDTO.getTotaleB().intValue()!=0?calendarioDTO.getTotaleB().intValue()-1:0));
+				break;
+			case "M":
+				calendarioDTO.setTotaleM(Integer.valueOf(calendarioDTO.getTotaleM().intValue()!=0?calendarioDTO.getTotaleM().intValue()-1:0));
+				break;
+				
+			default:
+				calendarioDTO.setTotaleR(Integer.valueOf(calendarioDTO.getTotaleR().intValue()!=0?calendarioDTO.getTotaleR().intValue()-1:0));
+				break;
+		}
+		
+		con.setAutoCommit(false);
+		sb = new StringBuffer();
+		sb.append("UPDATE calendario ");
+		sb.append("SET    totale_i = ?, ");
+		sb.append("       totale_rr = ?, ");
+		sb.append("       totale_m = ?, ");
+		sb.append("       totale_r = ?, ");
+		sb.append("       totale_b = ? ");
+		sb.append("WHERE  data = ? ");
+		
+		ptmt=con.prepareStatement(sb.toString());
+		ptmt.setInt(1, calendarioDTO.getTotaleI().intValue());
+		ptmt.setInt(2, calendarioDTO.getTotaleRr().intValue());
+		ptmt.setInt(3, calendarioDTO.getTotaleM().intValue());
+		ptmt.setInt(4, calendarioDTO.getTotaleR().intValue());
+		ptmt.setInt(5, calendarioDTO.getTotaleB().intValue());
+		ptmt.setDate(6, new java.sql.Date(data.getTime()));
+		result = ptmt.executeUpdate();
+		if(result==0)
+			throw new Exception("Update Failed");
+		
+	}
 
 }
