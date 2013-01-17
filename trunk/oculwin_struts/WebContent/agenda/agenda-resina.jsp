@@ -5,12 +5,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html:xhtml />
-				<div id="loading" style="display: none;">
-					<iframe id="slct_blck" src="about:blank"></iframe>
-					<div class="center">
-						<html:img src="/oculwin_struts/gfx/loader.gif" alt="loading" />
-					</div>
-				</div>
+
 				<html:form action="/calendario" method="get">
 					<html:hidden property="firstTime"/>
 					<html:hidden property="data"/>
@@ -59,34 +54,34 @@
 										<!-- =IIf((([Max_age_R]-[Num_app]>0 Or IsNull([Max_age_R]-[Num_app])) And [festivo]=0);"DISP";"COMP") -->
 										<c:choose>
 											<c:when test="${(day.maxAgeR-day.totaleI) > 0 && !day.festivo }">
-												<td style="background: #0f0">DISP.<!-- ${day.maxAgeR} ${day.totaleI}  ${day.festivo} --></td>
+												<td class="disp">DISP.<!-- ${day.maxAgeR} ${day.totaleI}  ${day.festivo} --></td>
 											</c:when>
 											<c:otherwise>
-												<td style="background: #F00">COMP.</td>
+												<td class="comp">COMP.</td>
 											</c:otherwise>
 										</c:choose>
 										<c:choose>
 											<c:when test="${(day.maxAgeRr-day.totaleRr) > 0 && !day.festivo }">
-												<td style="background: #0f0">DISP.</td>
+												<td class="disp">DISP.</td>
 											</c:when>
 											<c:otherwise>
-												<td style="background: #F00">COMP.</td>
+												<td class="comp">COMP.</td>
 											</c:otherwise>
 										</c:choose>
 										<c:choose>
 											<c:when test="${(day.maxAgeC2-day.totaleM) > 0 && !day.festivo }">
-												<td style="background: #0f0">DISP.</td>
+												<td class="disp">DISP.</td>
 											</c:when>
 											<c:otherwise>
-												<td style="background: #F00">COMP.</td>
+												<td class="comp">COMP.</td>
 											</c:otherwise>
 										</c:choose>
 										<c:choose>
 											<c:when test="${(day.maxAgeB-day.totaleB) > 0 && !day.festivo }">
-												<td style="background: #0f0">DISP.</td>
+												<td class="disp">DISP.</td>
 											</c:when>
 											<c:otherwise>
-												<td style="background: #F00">COMP.</td>
+												<td class="comp">COMP.</td>
 											</c:otherwise>
 										</c:choose>
 										<td onclick="document.location='<html:rewrite href="/oculwin_struts/calendario.do?method=loadAgendaDettaglio&data=${day.data}" name="calendarioForm" property="baseMap"/>'">&#160;</td>

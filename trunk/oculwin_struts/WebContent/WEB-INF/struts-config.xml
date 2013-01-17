@@ -14,7 +14,7 @@
 			type="org.apache.struts.action.DynaActionForm"> <form-property name="username" 
 			type="java.lang.String"/> <form-property name="password" type="java.lang.String"/> 
 			</form-bean> end sample -->
-			<form-bean name="calendarioForm" type="it.moda.form.CalendarioForm" />
+		<form-bean name="calendarioForm" type="it.moda.form.CalendarioForm" />
 	</form-beans>
 
 
@@ -23,6 +23,9 @@
 	<global-exceptions>
 		<!-- sample exception handler <exception key="expired.password" type="app.ExpiredPasswordException" 
 			path="/changePassword.jsp"/> end sample -->
+		<exception type="java.lang.Exception" 
+				   key="errors.general"
+			       path="/exception.jsp" />
 	</global-exceptions>
 
 
@@ -32,7 +35,7 @@
 		<!-- Default forward to "Welcome" action -->
 		<!-- Demonstrates using index.jsp to forward -->
 		<forward name="welcome" path="/Welcome.do" />
-		
+
 	</global-forwards>
 
 
@@ -41,14 +44,13 @@
 	<action-mappings>
 		<!-- Default "Welcome" action -->
 		<!-- Forwards to Welcome.jsp -->
-		<action path="/calendario"
-			type="it.moda.action.CalendarioAction"
+		<action path="/calendario" type="it.moda.action.CalendarioAction"
 			parameter="method" name="calendarioForm" scope="request">
 			<forward name="success" path="oculwin.agenda-resina" />
 		</action>
-		
+
 		<action path="/Welcome" forward="/pages/Welcome.jsp" />
-		<action path="/index" forward="default"/>
+		<action path="/index" forward="default" />
 
 		<!-- sample input and input submit actions <action path="/Input" type="org.apache.struts.actions.ForwardAction" 
 			parameter="/pages/Input.jsp"/> <action path="/InputSubmit" type="app.InputAction" 
@@ -95,11 +97,11 @@
 			value="/org/apache/struts/validator/validator-rules.xml,
                /WEB-INF/validation.xml" />
 	</plug-in>
-	
-		<plug-in className="org.apache.struts.tiles.TilesPlugin">
+
+	<plug-in className="org.apache.struts.tiles.TilesPlugin">
 		<set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml" />
 	</plug-in>
-	
+
 
 </struts-config>
 

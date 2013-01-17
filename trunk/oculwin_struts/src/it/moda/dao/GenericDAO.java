@@ -33,7 +33,7 @@ public class GenericDAO {
 		this.paginator.setRowNums(rowNums);
 	}
 
-	public Paginator getPaginator(String table){
+	public Paginator getPaginator(String table) throws SQLException{
 		try{
 			StringBuffer sb;
 			con=getConnection();
@@ -46,7 +46,7 @@ public class GenericDAO {
 		}
 		catch(SQLException e)
 		{
-			log.error(e.getMessage(),e);
+			throw e;
 		}
 		finally
 		{

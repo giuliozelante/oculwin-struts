@@ -11,4 +11,8 @@
     <put name="title" value="Agenda Resina" />
     <put name="content" value="/agenda/agenda-resina.jsp" />
   </definition>
+    <definition name="oculwin.exception" extends="default">
+    <put name="title" value="Errore" />
+    <put name="content" value="/error.jsp" />
+  </definition>
 </tiles-definitions>
