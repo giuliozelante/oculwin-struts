@@ -27,6 +27,7 @@
 			<html:img src="/oculwin_struts/gfx/loader.gif" alt="loading" />
 		</div>
 	</div>
+	<!-- 
 	<div class="info message">
 		 <h3></h3>
 		 <p></p>
@@ -46,6 +47,7 @@
 			 <h3>Ce l'hai fatta!</h3>
 			 <p></p>
 		</div>
+	-->
 	<div id="wrap">
 		<div id="header">
 			<img src="/oculwin_struts/gfx/testata.jpg" alt="testata" />

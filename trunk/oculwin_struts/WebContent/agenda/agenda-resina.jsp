@@ -114,7 +114,7 @@
 							</tfoot>
 						</table>
 					</div>
-					<nested:notEmpty property="appuntamenti">
+					
 					<br />
 					<h1>Appuntamenti</h1>
 					<div class="agendaTableContainer" id="divAppuntamenti">
@@ -130,7 +130,9 @@
 									<th scope="col" style="width: 1%">&#160;</th>
 								</tr>
 							</thead>
-							<tbody>
+							<tbody><%int count = 0; %>
+							<nested:present property="data">
+							<nested:notEmpty property="appuntamenti">
 								<nested:iterate property="appuntamenti" id="app" indexId="i">
 							<c:choose>
 								<c:when test="${i%2 == 0 }">
@@ -158,7 +160,7 @@
 										<td><a href="javascript:void(0);" onclick="deleteAppuntamento(${i})"><html:img src="/oculwin_struts/gfx/delete.png" alt="delete" /></a></td>
 									</tr>
 									<!-- Hidden Row with Form Data -->
-									<tr class="${row}" style="display: none;">
+									<tr class="${row} hiddenTr" style="display: none;">
 										<td>
 											<nested:hidden property="pden" styleId="pden${i}"/>
 											<nested:hidden property="pgAge" styleId="pgAge${i}"/>
@@ -218,8 +220,77 @@
 											</nested:select>
 										</td>
 										<td><a href="javascript:void(0);" onclick="saveChangesAppuntamento(${i})"><img src="/oculwin_struts/gfx/save_16.gif" alt="salva" style="visibility: hidden;"/></a></td>
-									</tr>
+									</tr><%count=(i+1);%>
 								</nested:iterate>
+								</nested:notEmpty>
+								</nested:present>
+									<c:choose>
+								<c:when test="${count%2 == 0 }">
+									<c:set var="row" value="odd"/>
+								</c:when>
+								<c:otherwise>
+									<c:set var="row" value="even"/>
+								</c:otherwise>
+								</c:choose>
+								<!-- Hidden Row with Form Data -->
+									<tr class="${row} newRow hiddenTr" style="display: none;">
+										<td>
+											<input type="hidden" name="appuntamenti[<%=count%>].pden" id="pden<%=count%>" />
+											<input type="hidden" name="appuntamenti[<%=count%>].pgAge" id="pgAge<%=count%>" />
+											<div id="pazientiHiddenDiv<%=count%>">
+												<select name="pazienti" id="pazienti<%=count%>" onchange="javascript:assignPaziente(this,<%=count%>);"></select>
+											</div>
+										</td>
+										<td>
+											<input type="text" name="appuntamenti[<%=count%>].pnascita" readonly="readonly" id="pnascita<%=count%>">
+										</td>
+										<td id="tdOra<%=count%>" onclick="javascript:openSelectOra(<%=count%>,this)" onkeypress="javascript:openSelectOra(<%=count%>,this)">
+											<div id="oraHiddenDiv<%=count%>">
+												<select name="appuntamenti[<%=count%>].ora" onchange="javascript:assignOra(<%=count%>,this)" id="ora<%=count%>">
+													<option value="08:00">08:00</option>
+													<option value="08:30">08:30</option>
+													<option value="09:00">09:00</option>
+													<option value="09:30">09:30</option>
+													<option value="10:00">10:00</option>
+													<option value="10:30">10:30</option>
+													<option value="11:00">11:00</option>
+													<option value="11:30">11:30</option>
+													<option value="12:00">12:00</option>
+													<option value="12:30">12:30</option>
+													<option value="13:00">13:00</option>
+													<option value="13:30">13:30</option>
+													<option value="14:00">14:00</option>
+													<option value="14:30">14:30</option>
+													<option value="15:00">15:00</option>
+													<option value="15:30">15:30</option>
+													<option value="16:00">16:00</option>
+													<option value="16:30">16:30</option>
+													<option value="17:00">17:00</option></select>
+											</div>
+										</td>
+										<td><input type="text" name="appuntamenti[<%=count%>].ptel" value="" id="ptel<%=count%>"></td>
+										<td>
+											<select name="appuntamenti[<%=count%>].tiOpeAge" id="tiOpeAge<%=count%>">
+												<option value="A">Altro</option>
+												<option value="I">Impronta</option>
+												<option value="R">Rinnovo</option>
+												<option value="M">Modelli</option>
+												<option value="C">Controllo</option>
+												<option value="L">Lucidatura</option></select>
+										</td>
+										<td><select name="appuntamenti[<%=count%>].note" id="note<%=count%>">
+												<option value="IMPRONTA">IMPRONTA</option>
+												<option value="RINNOVO">RINNOVO</option>
+												<option value="RINNOVO IN GIORNATA">RINNOVO IN GIORNATA</option>
+												<option value="CONSEGNA">CONSEGNA</option>
+												<option value="CONTROLLO">CONTROLLO</option>
+												<option value="MODIFICA">MODIFICA</option>
+												<option value="LUCIDATURA">LUCIDATURA</option>
+												<option value="SOSTITUZIONE">SOSTITUZIONE</option>
+												<option value="SPEDIZIONE">SPEDIZIONE</option></select>
+										</td>
+										<td><a href="javascript:void(0);" onclick="saveChangesAppuntamento(<%=count%>)"><img src="/oculwin_struts/gfx/save_16.gif" alt="salva" style="visibility: hidden;"></a></td>
+									</tr>
 							</tbody>
 							<tfoot>
 								<tr>
@@ -232,12 +303,12 @@
 											</div>
 											
 											<div style="position: absolute;white-space: nowrap;right:0;bottom: 2px;">
-												<a href="javascript:void(0);" onclick="insertNewAppuntamento()">
+												<a href="javascript:void(0);" onclick="insertNewAppuntamento(<%=count%>)">
 													<html:img src="/oculwin_struts/gfx/plus_16.png" style="vertical-align: middle;"/>
 													Aggiungi Nuovo Appuntamento
 												</a>
 											</div>
-											</div>
+										</div>
 									</th>
 								</tr>
 							</tfoot>
@@ -247,6 +318,4 @@
 						<select name="pazienti" id="pazienti">
 						</select>
 					</div>
-					
-					</nested:notEmpty>
 				</html:form>

@@ -1,9 +1,9 @@
 package it.moda.action;
 
 import it.moda.bean.AgendaDettaglioBean;
+import it.moda.bean.PazienteBean;
 import it.moda.dao.CalendarioDAO;
 import it.moda.dto.CalendarioDTO;
-import it.moda.dto.PazienteDTO;
 import it.moda.form.CalendarioForm;
 import it.moda.utils.Utils;
 
@@ -84,7 +84,7 @@ public class CalendarioAction extends DispatchAction{
 	    PrintWriter out = response.getWriter();
 //	    out.println("<select name=\"pazienti\" id=\"pazienti\" onselect=\"assignPaziente(this.value,"+request.getParameter("index")+")\">\n");
 		for (Iterator i = calendarioForm.getPazienti().iterator(); i.hasNext(); ){
-			PazienteDTO paziente = (PazienteDTO)i.next();
+			PazienteBean paziente = (PazienteBean)i.next();
 			out.println("<option value=\""+paziente.getPden()+"|"+paziente.getPnascita()+"|"+paziente.getDescPnascita()+"\">"+paziente.getPden()+" | "+paziente.getDescPnascita()+"</option>\n");
 		}
 //	    out.println("</select>\n");
