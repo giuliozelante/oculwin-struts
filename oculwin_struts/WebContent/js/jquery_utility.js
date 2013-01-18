@@ -1,5 +1,6 @@
 var elem;
 var i;
+var newRowNum = 0;
 function fillPazientiList(index,element) {
 	elem=element;
 //	i=index;
@@ -35,14 +36,9 @@ function fillPazientiList(index,element) {
 //	}
 //};
 function assignPaziente(element,index){
-//	element.parentNode.parentNode.style.background="#f00";
-//	element.parentNode.parentNode.nextElementSibling.style.background="#f00";
 	var pden=$(element).val().split("|")[0];
 	var pnascita=$(element).val().split("|")[1];
 	var formattedPnascita=$(element).val().split("|")[2];
-	
-//	$(element).append("<option value=\""+pden+"\">"+pden+"</option>");
-//	$(element option:eq(3)).attr('selected', 'selected')
 	
 	$("#spanPden"+index).html(pden);
 	$("#pden"+index).val(pden);
@@ -50,23 +46,6 @@ function assignPaziente(element,index){
 	$("#spanPnascita"+index).html(formattedPnascita);
 	$("#pnascita"+index).val(pnascita);
 	
-//	$(elem).show();
-//	$(elem).next("tr").hide();
-
-	//alert($("#spanPden"+index).html());
-	
-//	elem.onclick=fillPazienti;
-//	elem.onkeypress=fillPazienti;
-	
-//	$(elem).click(function() {
-//		fillPazientiList(index,elem);
-//	});
-//	$(elem).keypress(function() {
-//		fillPazientiList(index,elem);
-//	});
-	
-}
-function openSelectOra(index,obj){
 }
 function assignOra(index,obj){
 	$("#ora"+index).html($(obj).val);
@@ -113,16 +92,21 @@ function deleteAppuntamento(index){
 		    	if(i!=0||i!=$tr.length)
 		    		(i-1)%2==0?$(this).removeClass().addClass('even'):$(this).removeClass().addClass('odd');
 	    	});
+			$('#divAppuntamenti tfoot').find('[onclick*="insertNewAppuntamento('+newRowNum+')"]').attr('onclick',$('[onclick*="insertNewAppuntamento('+newRowNum+')"]').attr('onclick').replace(newRowNum,newRowNum-1));
+			newRowNum--;
 		}});
 //		alert("OK");
 	$('img[alt="loading"]').show();
 	$("#loading").hide();
+	
+
+	
 }
 
 function updateCalendario(xml){
 	$id = $(xml).find("id").text();
 	//$elemId = $('#divCalendario table tr').next().find('input[value="'+$id+'"]').closest("tr");
-    $tr = $('input[value="'+id+'"]').closest("tr");
+    $tr = $('input[value="'+$id+'"]').closest("tr");
     $tr.find('input[name$="festivo"]').val( $(xml).find('festivo').text());
     $tr.find('td:eq(2)').html( $(xml).find('message').text());
 //    ${(day.maxAgeR-day.totaleI) > 0 && !day.festivo }?"DISP":"COMP"
@@ -163,23 +147,115 @@ function updateCalendario(xml){
     $tr.find('td:eq(11)').html($(xml).find('totaleB').text());
     $tr.find('td:eq(12)').html($(xml).find('totaleR').text());
 }
+/**-----------------------------Inserisci Nuovo Appuntamento----------------------*/
+function insertNewAppuntamento(index){
+	$newRow=$($('.newRow')[newRowNum]);
+	
+	fillPazientiList(index,$newRow);
+	$anotherNewRow=$newRow.clone();
+	$newRow.after($anotherNewRow);
+	
+	if(index%2==0)
+		$anotherNewRow.removeClass('odd').addClass('even');
+	else
+		$anotherNewRow.removeClass('even').addClass('odd');
+	
+	$anotherNewRow.find($('[id$="'+index+'"]')).each(function(i){
+		$(this).attr('id',$(this).attr('id').replace(index,index+1));
+	});
+	$anotherNewRow.find($('[name*="'+index+'"]')).each(function(i){
+		$(this).attr('name',$(this).attr('name').replace(index,index+1));
+	});
+	$anotherNewRow.find($('[onclick*="'+index+'"]')).each(function(i){
+		$(this).attr('onclick',$(this).attr('onclick').replace(index,index+1));
+	});
+	
+	$anotherNewRow.find($('select[onchange*="'+index+'"]')).each(function(i){
+		$(this).attr('onchange',$(this).attr('onchange').replace(index,index+1));
+	});
+	
+	$anotherNewRow.find($('[onkeypress*="'+index+'"]')).each(function(i){
+		$(this).attr('onkeypress',$(this).attr('onkeypress').replace(index,index+1));
+	});
 
+	 $('#divAppuntamenti tfoot').find('[onclick*="insertNewAppuntamento('+index+')"]').attr('onclick',$('[onclick*="insertNewAppuntamento('+index+')"]').attr('onclick').replace(index,index+1));
+	
+	$newRow.show();
+	
+	newRowNum++;
+}
 
-
+function resetAll(){
+	var deletedNewRows = 0;
+	$('div#divAppuntamenti td').attr("style","");
+	$('div#divAppuntamenti img[alt="salva"]').css("visibility","hidden");
+	$('div#divAppuntamenti tr.hiddenTr').css("display",'none');
+	$('div#divAppuntamenti tr:not(.hiddenTr)').show();
+	$('div#divAppuntamenti tr.newRow').each(function(i){
+		if(i!=0){$(this).remove();deletedNewRows++;}
+	});
+	if(deletedNewRows>0){
+		$('#divAppuntamenti tfoot').find('[onclick*="insertNewAppuntamento('+newRowNum+')"]').attr('onclick',$('[onclick*="insertNewAppuntamento('+newRowNum+')"]').attr('onclick').replace(newRowNum,newRowNum-1));
+		newRowNum--;
+	}
+}
 
 /** ----------------------Functions Assigned at page LOAD ---------------------*/
+var fun=new Array();
+
+function dataChanged(element){
+	element.closest('td').css("background","#CFB");
+	element.closest('td').nextAll().find('img[alt="salva"]').css("visibility","visible");
+	$('div#divAppuntamenti tfoot input').css("visibility","visible");
+	$('a').not($('tfoot a')).click(function(event){
+		if(confirm("Hai effettuato delle modifiche, sicuro di voler uscire?"))
+			return true;
+		else
+			return false;
+	});
+	$('td').not($('div#divAppuntamenti td')).each(function(i){
+		 // your button
+        var td = $(this); 
+
+        // original click handler
+        var clickhandler = td.attr("onclick");
+        td.attr("onclick", "return false;");
+        td.attr("onkeypress", "return false;");
+
+        // new click handler
+        td.click(function(){
+		if(confirm("Hai effettuato delle modifiche, sicuro di voler uscire?"))
+			eval(clickhandler);
+		else
+			return false;
+        });
+        td.keypress(function(){
+    		if(confirm("Hai effettuato delle modifiche, sicuro di voler uscire?"))
+    			eval(clickhandler);
+    		else
+    			return false;
+            });
+		
+	});
+}
 $(document).ready(function(){
-	$('div#divAppuntamenti select').on("change",function() {
-		$(this).closest('td').css("background","#CFB");
-		$(this).closest('td').next().find('input[name$="pnascita"]').closest('td').css("background","#CFB");
-		$(this).closest('td').nextAll().find('img[alt="salva"]').css("visibility","visible");
-		$('div#divAppuntamenti tfoot input').css("visibility","visible");
+	//fun=$('div#divCalendario td').attr('onclick');
+//	$('div#divCalendario td').each(function(i){
+//		fun[i]=$(this).attr('onclick');
+//		$(this).attr('onclick','');
+		//$(this).on('click',eval(fun[i]));
+//	});
+	//$('div#divCalendario td').on('click',fun);
+	$('div#divAppuntamenti').on("change",'select',function() {
+		dataChanged($(this));
 	});
-	$('div#divAppuntamenti input[type="text"]').on("keyup",function() {
-		$(this).closest('td').css("background","#CFB");
-		$(this).closest('td').nextAll().find('img[alt="salva"]').css("visibility","visible");
-		$('div#divAppuntamenti tfoot input').css("visibility","visible");
+	$('div#divAppuntamenti').on("keyup", 'input[type="text"]',function() {
+		dataChanged($(this));
 	});
+	newRowNum = $('div#divAppuntamenti tbody tr').length-1;
+});
+
+	/*
 	 // Initially, hide them all
 	 hideAllMessages();
 	 
@@ -192,10 +268,14 @@ $(document).ready(function(){
 	 // When message is clicked, hide it
 	 $('.message').click(function(){			  
 			  $(this).animate({top: -$(this).outerHeight()}, 500);
-	  });	
-});
+	  });
+	  */	
 
-/**----------------------------Alert Messages--------------------------*/
+//function alertExitingWithoutSaving(action){
+//	
+//}
+
+/**----------------------------Alert Messages--------------------------
 var myMessages = ['info','warning','error','success'];
 function hideAllMessages()
 {
@@ -214,3 +294,4 @@ function showMessage(type)
 		  $('.'+type).animate({top:"0"}, 500);
 	});
 }
+*/

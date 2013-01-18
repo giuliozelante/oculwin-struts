@@ -25,7 +25,7 @@
 			path="/changePassword.jsp"/> end sample -->
 		<exception type="java.lang.Exception" 
 				   key="errors.general"
-			       path="/exception.jsp" />
+			       path="/error.jsp" />
 	</global-exceptions>
 
 

@@ -2,7 +2,6 @@ package it.moda.dao;
 
 import it.moda.bean.AgendaDettaglioBean;
 import it.moda.bean.PazienteBean;
-import it.moda.dto.AgendaDettaglioDTO;
 import it.moda.dto.CalendarioDTO;
 import it.moda.utils.ConnectionFactory;
 import it.moda.utils.Paginator;
@@ -14,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -239,7 +237,7 @@ public class CalendarioDAO extends GenericDAO{
 
 				pazienteDTO.setMcod(rs.getInt("mcod"));
 				pazienteDTO.setPden(rs.getString("pden"));
-				pazienteDTO.setPnascita(Utils.formatDate(rs.getDate("pnascita")));
+				pazienteDTO.setPnascita(rs.getDate("pnascita")!=null?Utils.formatDate(rs.getDate("pnascita")):"");
 				pazienteDTO.setDatePnascita(rs.getDate("pnascita"));
 				pazienteDTO.setDescPnascita(rs.getDate("pnascita")!=null?Utils.formatDate(rs.getDate("pnascita")):"");
 
@@ -362,7 +360,7 @@ public class CalendarioDAO extends GenericDAO{
 			con=getConnection();
 			con.setAutoCommit(false);
 			//XXX:Aggiorno il calendario
-			aggiornaCalendario(calendarioDTO, sb, data, appuntamento, result, ptmt);
+			calendarioDTO = aggiornaCalendario(calendarioDTO, sb, data, appuntamento, result, ptmt);
 			
 			//XXX:Cancello l'appuntamento (LOGICAMENTE non FISICAMENTE)
 			con.setAutoCommit(false);
@@ -561,7 +559,7 @@ public class CalendarioDAO extends GenericDAO{
 	//
 	//	}
 	//
-	private void aggiornaCalendario(CalendarioDTO calendarioDTO, StringBuffer sb,Date data,AgendaDettaglioBean appuntamento,int result,PreparedStatement ptmt) throws Exception {
+	private CalendarioDTO aggiornaCalendario(CalendarioDTO calendarioDTO, StringBuffer sb,Date data,AgendaDettaglioBean appuntamento,int result,PreparedStatement ptmt) throws Exception {
 		sb = new StringBuffer("SELECT * FROM CALENDARIO WHERE DATA = ?");
 		ptmt=con.prepareStatement(sb.toString());
 		ptmt.setDate(1, new java.sql.Date(data.getTime()));
@@ -629,7 +627,7 @@ public class CalendarioDAO extends GenericDAO{
 		result = ptmt.executeUpdate();
 		if(result==0)
 			throw new Exception("Update Failed");
-		
+		return calendarioDTO;
 	}
 
 }
