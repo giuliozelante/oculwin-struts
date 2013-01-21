@@ -4,7 +4,6 @@ import it.moda.dto.CalendarioDTO;
 
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -34,7 +33,7 @@ public class Utils {
 		java.text.SimpleDateFormat sdf=new java.text.SimpleDateFormat("yyyy-MM-dd");
 		sdf.applyLocalizedPattern("dd MMMM yyyy");
 		try {
-			return sdf.format(date);
+			return date!=null?sdf.format(date):"";
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 			return "";
@@ -44,7 +43,7 @@ public class Utils {
 		java.text.SimpleDateFormat sdf=new java.text.SimpleDateFormat("yyyy-MM-dd");
 		sdf.applyLocalizedPattern("yyyy-MM-dd");
 		try {
-			return sdf.format(date);
+			return date!=null?sdf.format(date):"";
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 			return "";

@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -230,7 +231,7 @@ public class CalendarioDAO extends GenericDAO{
 			ptmt=con.prepareStatement(sb.toString());
 
 			rs=ptmt.executeQuery();
-			
+
 			while(rs.next())
 			{
 				pazienteDTO = new PazienteBean();
@@ -243,7 +244,7 @@ public class CalendarioDAO extends GenericDAO{
 
 				pazienti.add(pazienteDTO);
 			}
-			
+
 		}catch(SQLException e)
 		{
 			throw e;
@@ -272,8 +273,8 @@ public class CalendarioDAO extends GenericDAO{
 		return pazienti;
 
 	}
-	
-/**---------Delete Appuntamento-----	
+
+	/**---------Delete Appuntamento-----	
 	 Dim db As Database
 	   Dim rsCalendario As DAO.Recordset
 	   Dim rsAgenda As DAO.Recordset
@@ -323,7 +324,7 @@ public class CalendarioDAO extends GenericDAO{
 	   End If
 	   'DoCmd.DoMenuItem acFormBar, acEditMenu, 8, , acMenuVer70
 	   'DoCmd.DoMenuItem acFormBar, acEditMenu, 6, , acMenuVer70
-	   
+
 	   Me!PDEN.Enabled = False
 	   Me!PTEL.Enabled = False
 	   Me!ORA.Enabled = False
@@ -346,12 +347,12 @@ public class CalendarioDAO extends GenericDAO{
 	   'Me.Requery
 	   rsCalendario.Close
 	   Set rsCalendario = Nothing
- * 
- * @param data
- * @param appuntamento
- * @return
- * @throws Exception 
- */
+	 * 
+	 * @param data
+	 * @param appuntamento
+	 * @return
+	 * @throws Exception 
+	 */
 	public CalendarioDTO deleteAppuntamento(Date data,AgendaDettaglioBean appuntamento) throws Exception{
 		CalendarioDTO calendarioDTO = null;
 		StringBuffer sb = null;
@@ -360,8 +361,8 @@ public class CalendarioDAO extends GenericDAO{
 			con=getConnection();
 			con.setAutoCommit(false);
 			//XXX:Aggiorno il calendario
-			calendarioDTO = aggiornaCalendario(calendarioDTO, sb, data, appuntamento, result, ptmt);
-			
+			calendarioDTO = aggiornaCalendario(calendarioDTO, sb, data, appuntamento, result, ptmt, false);
+
 			//XXX:Cancello l'appuntamento (LOGICAMENTE non FISICAMENTE)
 			con.setAutoCommit(false);
 			sb = new StringBuffer();
@@ -414,6 +415,71 @@ public class CalendarioDAO extends GenericDAO{
 
 		return calendarioDTO;
 	}
+
+	public int saveAllAppointments(Date data,List<AgendaDettaglioBean> appuntamenti) throws Exception{
+		CalendarioDTO calendarioDTO = null;
+		StringBuffer sb = null;
+		int result = 0; 
+		try{
+			con=getConnection();
+			con.setAutoCommit(false);
+			//XXX:Aggiorno il calendario
+			for(Iterator i = appuntamenti.iterator();i.hasNext();)
+			    calendarioDTO = aggiornaCalendario(calendarioDTO, sb, data, (AgendaDettaglioBean)i.next(), result, ptmt, true);
+
+			//XXX:Cancello l'appuntamento (LOGICAMENTE non FISICAMENTE)
+			con.setAutoCommit(false);
+			sb = new StringBuffer();
+			sb.append("UPDATE `agenda dettaglio` ");
+			sb.append("SET    deleted = ? ");
+			sb.append("WHERE  pg_age = ? ");
+			ptmt=con.prepareStatement(sb.toString());
+			ptmt.setBoolean(1, true);
+			ptmt.setInt(2, appuntamento.getPgAge());
+			result = ptmt.executeUpdate();
+			if(result==0)
+				throw new Exception("Logical Delete Failed");
+			con.commit();
+		}catch(Exception e){
+			if(con!=null){
+				try{
+					if(con!=null){
+						con.rollback();
+					}
+				}
+				catch(SQLException ex)
+				{
+					throw ex;
+				}
+				catch(Exception ex)
+				{
+					throw ex;
+				}
+			}
+			throw e;
+		}finally{
+			try{
+				if(rs!=null)
+					rs.close();
+				if(ptmt!=null)
+					ptmt.close();
+				if(con!=null)
+					con.close();
+			}
+			catch(SQLException e)
+			{
+				throw e;
+			}
+			catch(Exception e)
+			{
+				throw e;
+			}
+
+		}
+
+		return result;
+	}
+
 	//	public CalendarioDTO findByPrimaryKey(String empId)
 	//	{
 	//
@@ -559,7 +625,7 @@ public class CalendarioDAO extends GenericDAO{
 	//
 	//	}
 	//
-	private CalendarioDTO aggiornaCalendario(CalendarioDTO calendarioDTO, StringBuffer sb,Date data,AgendaDettaglioBean appuntamento,int result,PreparedStatement ptmt) throws Exception {
+	private CalendarioDTO aggiornaCalendario(CalendarioDTO calendarioDTO, StringBuffer sb,Date data,AgendaDettaglioBean appuntamento,int result,PreparedStatement ptmt,boolean save) throws Exception {
 		sb = new StringBuffer("SELECT * FROM CALENDARIO WHERE DATA = ?");
 		ptmt=con.prepareStatement(sb.toString());
 		ptmt.setDate(1, new java.sql.Date(data.getTime()));
@@ -586,12 +652,46 @@ public class CalendarioDAO extends GenericDAO{
 		}
 		//XXX:Aggiorno il Calendario
 		int eta=Utils.calculateAge((Utils.parseDate(appuntamento.getPnascita())));
-		switch (appuntamento.getTiOpeAge()) {
+		//XXX:controllo se è salvataggio o cancellazione
+		if(save){
+			if(appuntamento.getPgAge()==0){
+				
+				sb = new StringBuffer("UPDATE 03OINFAT SET PG_AGE = (PG_AGE + 1) WHERE ANNO = ?");
+				ptmt=con.prepareStatement(sb.toString());
+				ptmt.setDate(1, new java.sql.Date(data.getTime()));
+				
+				appuntamento.setPgAge(appuntamento.getPgAge()+1);
+				
+				switch (appuntamento.getTiOpeAge()) {
+				case "I":
+					calendarioDTO.setTotaleI(Integer.valueOf(calendarioDTO.getTotaleI().intValue()!=0?calendarioDTO.getTotaleI().intValue()+1:0));
+					if(eta<=Utils.ETA)
+						calendarioDTO.setTotaleB(Integer.valueOf(calendarioDTO.getTotaleB().intValue()!=0?calendarioDTO.getTotaleB().intValue()+1:0));
+
+					break;
+				case "R":
+					calendarioDTO.setTotaleRr(Integer.valueOf(calendarioDTO.getTotaleRr().intValue()!=0?calendarioDTO.getTotaleRr().intValue()+1:0));
+					if(eta<=Utils.ETA)
+						calendarioDTO.setTotaleB(Integer.valueOf(calendarioDTO.getTotaleB().intValue()!=0?calendarioDTO.getTotaleB().intValue()+1:0));
+					break;
+				case "M":
+					calendarioDTO.setTotaleM(Integer.valueOf(calendarioDTO.getTotaleM().intValue()!=0?calendarioDTO.getTotaleM().intValue()+1:0));
+					break;
+
+				default:
+					calendarioDTO.setTotaleR(Integer.valueOf(calendarioDTO.getTotaleR().intValue()!=0?calendarioDTO.getTotaleR().intValue()+1:0));
+					break;
+				}
+			}else{
+				
+			}
+		}else{
+			switch (appuntamento.getTiOpeAge()) {
 			case "I":
 				calendarioDTO.setTotaleI(Integer.valueOf(calendarioDTO.getTotaleI().intValue()!=0?calendarioDTO.getTotaleI().intValue()-1:0));
 				if(eta<=Utils.ETA)
 					calendarioDTO.setTotaleB(Integer.valueOf(calendarioDTO.getTotaleB().intValue()!=0?calendarioDTO.getTotaleB().intValue()-1:0));
-					
+
 				break;
 			case "R":
 				calendarioDTO.setTotaleRr(Integer.valueOf(calendarioDTO.getTotaleRr().intValue()!=0?calendarioDTO.getTotaleRr().intValue()-1:0));
@@ -601,12 +701,13 @@ public class CalendarioDAO extends GenericDAO{
 			case "M":
 				calendarioDTO.setTotaleM(Integer.valueOf(calendarioDTO.getTotaleM().intValue()!=0?calendarioDTO.getTotaleM().intValue()-1:0));
 				break;
-				
+
 			default:
 				calendarioDTO.setTotaleR(Integer.valueOf(calendarioDTO.getTotaleR().intValue()!=0?calendarioDTO.getTotaleR().intValue()-1:0));
 				break;
+			}
 		}
-		
+
 		con.setAutoCommit(false);
 		sb = new StringBuffer();
 		sb.append("UPDATE calendario ");
@@ -616,7 +717,7 @@ public class CalendarioDAO extends GenericDAO{
 		sb.append("       totale_r = ?, ");
 		sb.append("       totale_b = ? ");
 		sb.append("WHERE  data = ? ");
-		
+
 		ptmt=con.prepareStatement(sb.toString());
 		ptmt.setInt(1, calendarioDTO.getTotaleI().intValue());
 		ptmt.setInt(2, calendarioDTO.getTotaleRr().intValue());

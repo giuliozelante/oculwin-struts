@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 
 import org.apache.log4j.Logger;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -103,12 +104,20 @@ public class CalendarioAction extends DispatchAction{
 		return (mapping.findForward("success"));
 
 	}
-	public ActionForward save(ActionMapping mapping,
+	public ActionForward saveAll(ActionMapping mapping,
 			ActionForm form,
 			HttpServletRequest request,
 			HttpServletResponse response)
 					throws Exception {
-
+		CalendarioForm calendarioForm = (CalendarioForm) form;
+		
+		ActionErrors errors = calendarioForm.validate(mapping, request);
+		if(errors.isEmpty()){
+			CalendarioDAO calendarioDAO = new CalendarioDAO();
+			calendarioDAO.saveAllAppointments(calendarioForm.getData(), appuntamento)
+		}
+		saveErrors(request, errors);
+		loadListaCalendario(calendarioForm,request);
 		return (mapping.findForward("success"));
 
 	}

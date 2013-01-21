@@ -4,9 +4,9 @@
 <%@ taglib uri="http://struts.apache.org/tags-nested" prefix="nested"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<html:xhtml />
-
-				<html:form action="/calendario" method="get">
+				<html:xhtml />
+				<html:form action="/calendario" method="get" onsubmit="validateCalendarioForm(this)">
+					<html:hidden property="method" value="saveAll"/>
 					<html:hidden property="firstTime"/>
 					<html:hidden property="data"/>
 					<div class="agendaTableContainer" id="divCalendario">
@@ -155,7 +155,7 @@
 												<nested:write property="ora" />
 											</span>
 										</td>
-										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);"><nested:write property="ptel" /></td>
+										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);"><nested:write property="ptel" /><nested:messages id="ptel" property="ptel" /></td>
 										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);"><nested:write property="tiOpeAge" /></td>
 										<td onclick="javascript:fillPazientiList(${i},this);" onkeypress="javascript:fillPazientiList(${i},this);"><nested:write property="note" /></td>
 										<td><a href="javascript:void(0);" onclick="deleteAppuntamento(${i})"><html:img src="/oculwin_struts/gfx/delete.png" alt="delete" /></a></td>
@@ -166,7 +166,7 @@
 											<nested:hidden property="pden" styleId="pden${i}"/>
 											<nested:hidden property="pgAge" styleId="pgAge${i}"/>
 											<div id="pazientiHiddenDiv${i}">
-												<select name="pazienti" id="pazienti${i}" onchange="javascript:assignPaziente(this,${i});"></select>
+												<select name="paziente" id="paziente${i}" onchange="javascript:assignPaziente(this,${i});"></select>
 											</div>
 										</td>
 										<td>
@@ -197,7 +197,7 @@
 												</nested:select>
 											</div>
 										</td>
-										<td><nested:text property="ptel" styleId="ptel${i}"/></td>
+										<td><nested:text property="ptel" styleId="ptel${i}"/><nested:messages id="ptel" property="ptel" /></td>
 										<td>
 											<nested:select property="tiOpeAge" styleId="tiOpeAge${i}">
 												<html:option value="A">Altro</html:option>
@@ -239,7 +239,7 @@
 											<input type="hidden" name="appuntamenti[<%=count%>].pden" id="pden<%=count%>" />
 											<input type="hidden" name="appuntamenti[<%=count%>].pgAge" id="pgAge<%=count%>" />
 											<div id="pazientiHiddenDiv<%=count%>">
-												<select name="pazienti" id="pazienti<%=count%>" onchange="javascript:assignPaziente(this,<%=count%>);"></select>
+												<select name="paziente" id="paziente<%=count%>" onchange="javascript:assignPaziente(this,<%=count%>);"></select>
 											</div>
 										</td>
 										<td>
@@ -298,7 +298,7 @@
 									<th colspan="7">
 										<div style="width: 100%;text-align: center;white-space: nowrap;position: relative;">
 											<div style="margin:0 auto;">
-											<input type="button" onclick="saveAll()" value="<bean:message key="button.label.saveAll"/>" style="visibility: hidden"/>
+											<input type="submit" value="<bean:message key="button.label.saveAll"/>" style="visibility: hidden"/>
 											&nbsp;
 											<html:reset onclick="resetAll()" style="visibility:hidden"><bean:message key="button.label.reset"/></html:reset>
 											</div>
@@ -317,7 +317,20 @@
 					</div>
 					</nested:present>
 					<div id="pazientiHiddenDiv" style="display: none;">
-						<select name="pazienti" id="pazienti">
+						<select name="paziente" id="paziente">
 						</select>
 					</div>
 				</html:form>
+				<script type="text/javascript">
+				<!--
+				$(document).ready(function() {
+					$.validator.addMethod('input[name$="ptel"]', function(value, element) 
+					{ 
+					return this.optional(element) || /^[0-9]*$/i.test(value); 
+					}, "Inserisci un numero di telefono valido.");
+				
+				$("form").validate();
+				});
+				//-->
+				</script>
+				<%--<html:javascript formName="calendarioForm" />--%>
