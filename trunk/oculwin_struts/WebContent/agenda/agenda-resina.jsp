@@ -116,6 +116,7 @@
 					</div>
 					
 					<br />
+					<nested:present property="data">
 					<h1>Appuntamenti</h1>
 					<div class="agendaTableContainer" id="divAppuntamenti">
 						<table class="simpletablestyle">
@@ -131,7 +132,7 @@
 								</tr>
 							</thead>
 							<tbody><%int count = 0; %>
-							<nested:present property="data">
+							
 							<nested:notEmpty property="appuntamenti">
 								<nested:iterate property="appuntamenti" id="app" indexId="i">
 							<c:choose>
@@ -171,7 +172,7 @@
 										<td>
 											<nested:text property="pnascita" styleId="pnascita${i}" readonly="true"/>
 										</td>
-										<td id="tdOra${i}" onclick="javascript:openSelectOra(${i},this)" onkeypress="javascript:openSelectOra(${i},this)">
+										<td id="tdOra${i}">
 											<div id="oraHiddenDiv${i}">
 												<nested:select property="ora" styleId="ora${i}" onchange="javascript:assignOra(${i},this)">
 													<html:option value="08:00">08:00</html:option>
@@ -223,7 +224,7 @@
 									</tr><%count=(i+1);%>
 								</nested:iterate>
 								</nested:notEmpty>
-								</nested:present>
+								
 									<c:choose>
 								<c:when test="${count%2 == 0 }">
 									<c:set var="row" value="odd"/>
@@ -244,7 +245,7 @@
 										<td>
 											<input type="text" name="appuntamenti[<%=count%>].pnascita" readonly="readonly" id="pnascita<%=count%>">
 										</td>
-										<td id="tdOra<%=count%>" onclick="javascript:openSelectOra(<%=count%>,this)" onkeypress="javascript:openSelectOra(<%=count%>,this)">
+										<td id="tdOra<%=count%>">
 											<div id="oraHiddenDiv<%=count%>">
 												<select name="appuntamenti[<%=count%>].ora" onchange="javascript:assignOra(<%=count%>,this)" id="ora<%=count%>">
 													<option value="08:00">08:00</option>
@@ -314,6 +315,7 @@
 							</tfoot>
 						</table>
 					</div>
+					</nested:present>
 					<div id="pazientiHiddenDiv" style="display: none;">
 						<select name="pazienti" id="pazienti">
 						</select>

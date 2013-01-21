@@ -198,46 +198,64 @@ function resetAll(){
 		$('#divAppuntamenti tfoot').find('[onclick*="insertNewAppuntamento('+newRowNum+')"]').attr('onclick',$('[onclick*="insertNewAppuntamento('+newRowNum+')"]').attr('onclick').replace(newRowNum,newRowNum-1));
 		newRowNum--;
 	}
+	$('a').not($('tfoot a')).off('click',confirmChangesLink);
+	$('td').not($('div#divAppuntamenti td')).each(function(i){
+		// your button
+        var td = $(this);
+        
+        td.off("click");
+        td.off("keypress");
+
+        // new click handler
+        td.on('click',function(){
+			eval(clickhandler[i]);
+        });
+        td.on('keypress',function(){
+    		eval(clickhandler[i]);
+        });
+	});
 }
 
-/** ----------------------Functions Assigned at page LOAD ---------------------*/
-var fun=new Array();
-
+var clickhandler = new Array();
+var confirmChangesLink = function(event){
+	if(confirm("Hai effettuato delle modifiche, sicuro di voler uscire?"))
+		return true;
+	else
+		return false;
+};
 function dataChanged(element){
 	element.closest('td').css("background","#CFB");
+	element.closest('td').next().find('input[name$="pnascita"]').closest('td').css("background","#CFB");
 	element.closest('td').nextAll().find('img[alt="salva"]').css("visibility","visible");
 	$('div#divAppuntamenti tfoot input').css("visibility","visible");
-	$('a').not($('tfoot a')).click(function(event){
-		if(confirm("Hai effettuato delle modifiche, sicuro di voler uscire?"))
-			return true;
-		else
-			return false;
-	});
+	//Adding confirm dialog for changes
+	$('a').not($('tfoot a')).on('click',confirmChangesLink);
 	$('td').not($('div#divAppuntamenti td')).each(function(i){
 		 // your button
         var td = $(this); 
 
         // original click handler
-        var clickhandler = td.attr("onclick");
+        clickhandler[i] = td.attr("onclick");
         td.attr("onclick", "return false;");
         td.attr("onkeypress", "return false;");
 
         // new click handler
         td.click(function(){
 		if(confirm("Hai effettuato delle modifiche, sicuro di voler uscire?"))
-			eval(clickhandler);
+			eval(clickhandler[i]);
 		else
 			return false;
         });
         td.keypress(function(){
     		if(confirm("Hai effettuato delle modifiche, sicuro di voler uscire?"))
-    			eval(clickhandler);
+    			eval(clickhandler[i]);
     		else
     			return false;
             });
 		
 	});
 }
+/** ----------------------Functions Assigned at page LOAD ---------------------*/
 $(document).ready(function(){
 	//fun=$('div#divCalendario td').attr('onclick');
 //	$('div#divCalendario td').each(function(i){
@@ -252,7 +270,7 @@ $(document).ready(function(){
 	$('div#divAppuntamenti').on("keyup", 'input[type="text"]',function() {
 		dataChanged($(this));
 	});
-	newRowNum = $('div#divAppuntamenti tbody tr').length-1;
+	//newRowNum = $('div#divAppuntamenti tbody tr').length-1;
 });
 
 	/*
