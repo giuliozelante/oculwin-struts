@@ -6,18 +6,22 @@ import it.moda.dto.CalendarioDTO;
 import it.moda.utils.Paginator;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.ListUtils;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
 
 @SuppressWarnings("serial")
 public class CalendarioForm extends BaseForm {
 	private List<CalendarioDTO> listCalendario;
-	private List<AgendaDettaglioBean> appuntamenti;
+	protected List<AgendaDettaglioBean> appuntamenti;
 	private Paginator paginator;
 	private boolean firstTime;
 	private List<PazienteBean> pazienti;
@@ -206,7 +210,7 @@ public class CalendarioForm extends BaseForm {
 	public List<AgendaDettaglioBean> getAppuntamenti() {
 		return appuntamenti;
 	}
-	public void setAppuntamenti(List<AgendaDettaglioBean> appuntamenti) {
+	public void setAppuntamenti(final List<AgendaDettaglioBean> appuntamenti) {
 		this.appuntamenti = appuntamenti;
 	}
 	public List<PazienteBean> getPazienti() {
@@ -220,5 +224,17 @@ public class CalendarioForm extends BaseForm {
 	}
 	public void setData(String data) {
 		this.data = data;
+	}
+	@Override
+	public ActionErrors validate(ActionMapping arg0, HttpServletRequest arg1) {
+		// TODO Auto-generated method stub
+		ActionErrors errors = super.validate(arg0, arg1);
+		for(Iterator<AgendaDettaglioBean> i = this.getAppuntamenti().iterator();i.hasNext(); ){
+			AgendaDettaglioBean adBean = (AgendaDettaglioBean) i.next();
+			if(Pattern.matches("^[0-9]*$",adBean.getPtel()))
+				errors.add("table.header.appuntamenti.telefono",new ActionMessage("errors.telephone", "Telefono"));
+			
+		}
+		return errors;
 	}
 }

@@ -25,7 +25,7 @@
 			path="/changePassword.jsp"/> end sample -->
 		<exception type="java.lang.Exception" 
 				   key="errors.general"
-			       path="/error.jsp" />
+			       path="oculwin.exception" />
 	</global-exceptions>
 
 
@@ -46,6 +46,7 @@
 		<!-- Forwards to Welcome.jsp -->
 		<action path="/calendario" type="it.moda.action.CalendarioAction"
 			parameter="method" name="calendarioForm" scope="request">
+			<!--  validate="true" input="oculwin.agenda-resina"-->
 			<forward name="success" path="oculwin.agenda-resina" />
 		</action>
 

@@ -10,15 +10,15 @@ function fillPazientiList(index,element) {
 	$(element.parentNode).hide();
 	$(element.parentNode).next("tr").show();
 //	$(element).children("#spanPden"+index).html("");
-	if($("#pazienti").children().length==0){
+	if($("#paziente").children().length==0){
 		$.get("calendario.do?method=fillPazientiList",function(response){
 			$("#loading").hide();
-			$("#pazienti").html(response);
-			$("#pazienti"+index).html($("#pazienti").html());
+			$("#paziente").html(response);
+			$("#paziente"+index).html($("#paziente").html());
 		});
 	}else{
 		$("#loading").hide();
-		$("#pazienti"+index).html($("#pazienti").html());
+		$("#paziente"+index).html($("#paziente").html());
 	}
 }
 //var fillPazienti=function fillPazientiList() {
