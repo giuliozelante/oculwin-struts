@@ -229,12 +229,12 @@ public class CalendarioForm extends BaseForm {
 	public ActionErrors validate(ActionMapping arg0, HttpServletRequest arg1) {
 		// TODO Auto-generated method stub
 		ActionErrors errors = super.validate(arg0, arg1);
-		for(Iterator<AgendaDettaglioBean> i = this.getAppuntamenti().iterator();i.hasNext(); ){
-			AgendaDettaglioBean adBean = (AgendaDettaglioBean) i.next();
-			if(Pattern.matches("^[0-9]*$",adBean.getPtel()))
-				errors.add("table.header.appuntamenti.telefono",new ActionMessage("errors.telephone", "Telefono"));
-			
-		}
+//		for(Iterator<AgendaDettaglioBean> i = this.getAppuntamenti().iterator();i.hasNext(); ){
+//			AgendaDettaglioBean adBean = (AgendaDettaglioBean) i.next();
+//			if(adBean.getPtel()!=null&&!Pattern.matches("^[0-9]*$",adBean.getPtel()))
+//				errors.add("table.header.appuntamenti.telefono",new ActionMessage("errors.telephone", "Telefono"));
+//			
+//		}
 		return errors;
 	}
 }

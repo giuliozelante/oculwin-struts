@@ -5,7 +5,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 				<html:xhtml />
-				<html:form action="/calendario" method="get" onsubmit="validateCalendarioForm(this)">
+				<html:form action="/calendario">
 					<html:hidden property="method" value="saveAll"/>
 					<html:hidden property="firstTime"/>
 					<html:hidden property="data"/>
@@ -165,6 +165,9 @@
 										<td>
 											<nested:hidden property="pden" styleId="pden${i}"/>
 											<nested:hidden property="pgAge" styleId="pgAge${i}"/>
+											<nested:hidden property="mcod" styleId="mcod${i}"/>
+											<nested:hidden property="dataora" styleId="dataora${i}"/>
+											<nested:hidden property="visita" styleId="visita${i}"/>
 											<div id="pazientiHiddenDiv${i}">
 												<select name="paziente" id="paziente${i}" onchange="javascript:assignPaziente(this,${i});"></select>
 											</div>
@@ -323,14 +326,14 @@
 				</html:form>
 				<script type="text/javascript">
 				<!--
-				$(document).ready(function() {
+				/*$(document).ready(function() {
 					$.validator.addMethod('input[name$="ptel"]', function(value, element) 
 					{ 
 					return this.optional(element) || /^[0-9]*$/i.test(value); 
 					}, "Inserisci un numero di telefono valido.");
 				
 				$("form").validate();
-				});
+				});*/
 				//-->
 				</script>
 				<%--<html:javascript formName="calendarioForm" />--%>

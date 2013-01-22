@@ -63,6 +63,8 @@
 			</div>
 			<div id="content">
 				<h1><tiles:getAsString name="title"/></h1>
+				<html:errors />
+				<html:messages id="messages"/>
 				<tiles:insert name="content" />
 			</div>
 		</div>
