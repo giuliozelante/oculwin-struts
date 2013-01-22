@@ -23,9 +23,11 @@
 	<global-exceptions>
 		<!-- sample exception handler <exception key="expired.password" type="app.ExpiredPasswordException" 
 			path="/changePassword.jsp"/> end sample -->
-		<exception type="java.lang.Exception" 
+		<exception type="java.lang.Throwable" 
 				   key="errors.general"
-			       path="oculwin.exception" />
+			       path="oculwin.exception"
+			       handler="it.moda.exception.BaseException" 
+			       />
 	</global-exceptions>
 
 
@@ -45,8 +47,8 @@
 		<!-- Default "Welcome" action -->
 		<!-- Forwards to Welcome.jsp -->
 		<action path="/calendario" type="it.moda.action.CalendarioAction"
-			parameter="method" name="calendarioForm" scope="request">
-			<!--  validate="true" input="oculwin.agenda-resina"-->
+			parameter="method" name="calendarioForm" scope="request" validate="false">
+			 <!--  input="oculwin.agenda-resina"-->
 			<forward name="success" path="oculwin.agenda-resina" />
 		</action>
 
