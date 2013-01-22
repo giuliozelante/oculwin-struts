@@ -905,9 +905,17 @@ public class CalendarioDAO extends GenericDAO{
 		return calendarioDTO;
 	}
 	private String getOldTiOpeAge(AgendaDettaglioBean appuntamento,StringBuffer sb,PreparedStatement ptmt,ResultSet rs) throws SQLException{
-		sb = new StringBuffer("SELECT Ti_ope_age FROM `agenda dettaglio` WHERE pg_age = ?");
+		sb = new StringBuffer();
+		sb.append("SELECT *, ");
+		sb.append("       from `agenda dettaglio` ");
+		sb.append("WHERE  dataora = ? ");
+		sb.append("       AND ti_age = 'R' ");
+		sb.append("       AND ( deleted IS NULL ");
+		sb.append("              OR deleted = ( 0 ) ) ");
+		sb.append("       AND pg_age = ? ");
 		ptmt=con.prepareStatement(sb.toString());
-		ptmt.setInt(1, appuntamento.getPgAge());
+		ptmt.setDate(1, new java.sql.Date(Utils.parseDate(appuntamento.getDataora()).getTime()));
+		ptmt.setInt(2, appuntamento.getPgAge());
 		rs=ptmt.executeQuery();
 		String oldTiOpeAge="";
 		if(rs.next())
