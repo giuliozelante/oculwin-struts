@@ -21,6 +21,7 @@ public class BaseException extends ExceptionHandler {
 			HttpServletResponse response) throws ServletException {
 		
 		log.error(e.getMessage(), e);
+		request.setAttribute("exception", e);
 	    
 		return super.execute(e, ec, mapping, form, request, response);
 	}
