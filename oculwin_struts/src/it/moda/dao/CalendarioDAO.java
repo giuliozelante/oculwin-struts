@@ -362,7 +362,7 @@ public class CalendarioDAO extends GenericDAO{
 			con=getConnection();
 			con.setAutoCommit(false);
 			//XXX:Aggiorno il calendario
-			calendarioDTO = aggiornaCalendario(calendarioDTO, sb, data, appuntamento, result, ptmt, false);
+			calendarioDTO = aggiornaCalendario(calendarioDTO, data, appuntamento, false, null);
 
 			//XXX:Cancello l'appuntamento (LOGICAMENTE non FISICAMENTE)
 			con.setAutoCommit(false);
@@ -421,13 +421,14 @@ public class CalendarioDAO extends GenericDAO{
 		CalendarioDTO calendarioDTO = null;
 		AgendaDettaglioBean appuntamento = null;
 		StringBuffer sb = null;
-		int result = 0; 
+		String oldTiOpeAge = "";
+		con=getConnection();
+		con.setAutoCommit(false);
 		try{
-			con=getConnection();
 			//XXX:Aggiorno il calendario
 			for(Iterator i = appuntamenti.iterator();i.hasNext();){
 				appuntamento = (AgendaDettaglioBean)i.next();
-				con.setAutoCommit(false);
+
 				if(appuntamento.getPgAge()==0 && appuntamento.getTiOpeAge().equalsIgnoreCase("I")){
 					GregorianCalendar gc = (GregorianCalendar) GregorianCalendar.getInstance();
 					gc.setTime(data);
@@ -435,7 +436,7 @@ public class CalendarioDAO extends GenericDAO{
 						gc.add(GregorianCalendar.DATE, 3);
 					else
 						gc.add(GregorianCalendar.DATE, 1);
-				
+
 					sb = new StringBuffer();
 					sb.append("SELECT data, ");
 					sb.append("       festivo ");
@@ -445,13 +446,13 @@ public class CalendarioDAO extends GenericDAO{
 					ptmt.setDate(1, new java.sql.Date(gc.getTimeInMillis()));
 					rs = ptmt.executeQuery();
 					con.setAutoCommit(false);
-					
+
 					if(rs.next()){
 						if(rs.getBoolean("FESTIVO")&&gc.get(GregorianCalendar.DAY_OF_WEEK)==6)
 							gc.add(GregorianCalendar.DATE, 3);
 						else if(rs.getBoolean("FESTIVO")&&gc.get(GregorianCalendar.DAY_OF_WEEK)!=6)
 							gc.add(GregorianCalendar.DATE, 1);
-						
+
 						sb = new StringBuffer();
 						sb.append("UPDATE `03oinfat` ");
 						sb.append("SET    pg_age = ( pg_age + 1 ) ");
@@ -499,11 +500,11 @@ public class CalendarioDAO extends GenericDAO{
 					con.setAutoCommit(false);
 					if(ptmt.executeUpdate()==0)
 						throw new Exception("Update Failed");
-					aggiornaCalendario(calendarioDTO, sb, gc.getTime(), appuntamento, result, ptmt, true);
 				}
-				String oldTiOpeAge = getOldTiOpeAge(appuntamento, sb, ptmt, rs);
-				if(appuntamento.getPgAge()!=0 && !oldTiOpeAge.equalsIgnoreCase("I") && appuntamento.getTiOpeAge().equalsIgnoreCase("I")){
-					throw new Exception("Appuntamento consegna non inserito,verificare il giorno successivo");
+				if(appuntamento.getPgAge()!=0){
+					oldTiOpeAge = getOldTiOpeAge(appuntamento, sb, ptmt, rs);
+					if(!oldTiOpeAge.equalsIgnoreCase("I") && appuntamento.getTiOpeAge().equalsIgnoreCase("I"))
+						throw new Exception("Appuntamento consegna non inserito,verificare il giorno successivo");
 				}else{
 					sb=new StringBuffer();
 					sb.append("UPDATE `agenda dettaglio` ");
@@ -517,7 +518,7 @@ public class CalendarioDAO extends GenericDAO{
 					sb.append("       ti_age = ?, ");
 					sb.append("       ti_ope_age = ?, ");
 					sb.append("       note = ? ");
-					sb.append("WHERE  dataora = ? ");
+					sb.append("WHERE  dataora = ? AND pg_age = ?");
 					ptmt = con.prepareStatement(sb.toString());
 					ptmt.setInt(1, appuntamento.getMcod());
 					ptmt.setString(2, appuntamento.getPden());
@@ -530,10 +531,15 @@ public class CalendarioDAO extends GenericDAO{
 					ptmt.setString(9, appuntamento.getTiOpeAge());
 					ptmt.setString(10, appuntamento.getNote());
 					ptmt.setDate(11, new java.sql.Date(data.getTime()));
+					ptmt.setInt(12, appuntamento.getPgAge());
 					if(ptmt.executeUpdate()==0)
 						throw new Exception("Update Failed");
-					calendarioDTO = aggiornaCalendario(calendarioDTO, sb, data, appuntamento, result, ptmt, true);
+
 				}
+				if(oldTiOpeAge!=null&&!oldTiOpeAge.equals(""))
+						calendarioDTO = aggiornaCalendario(calendarioDTO, data, appuntamento, true, oldTiOpeAge);
+				else
+					calendarioDTO = aggiornaCalendario(calendarioDTO, data, appuntamento, true, appuntamento.getTiOpeAge());
 				
 			}
 			con.commit();
@@ -721,8 +727,8 @@ public class CalendarioDAO extends GenericDAO{
 	//
 	//	}
 	//
-	private CalendarioDTO aggiornaCalendario(CalendarioDTO calendarioDTO, StringBuffer sb,Date data,AgendaDettaglioBean appuntamento,int result,PreparedStatement ptmt,boolean save) throws Exception {
-		sb = new StringBuffer("SELECT * FROM CALENDARIO WHERE DATA = ?");
+	private CalendarioDTO aggiornaCalendario(CalendarioDTO calendarioDTO, Date data,AgendaDettaglioBean appuntamento,boolean save,String oldTiOpeAge) throws Exception {
+		StringBuffer sb = new StringBuffer("SELECT * FROM CALENDARIO WHERE DATA = ?");
 		ptmt=con.prepareStatement(sb.toString());
 		ptmt.setDate(1, new java.sql.Date(data.getTime()));
 		rs=ptmt.executeQuery();
@@ -783,7 +789,6 @@ public class CalendarioDAO extends GenericDAO{
 					break;
 				}
 			}else{
-				String oldTiOpeAge = getOldTiOpeAge(appuntamento, sb, ptmt, rs);
 				if(!appuntamento.getTiOpeAge().equalsIgnoreCase(oldTiOpeAge)){
 					switch (appuntamento.getTiOpeAge()) {
 					case "I":
@@ -899,14 +904,13 @@ public class CalendarioDAO extends GenericDAO{
 		ptmt.setInt(4, calendarioDTO.getTotaleR().intValue());
 		ptmt.setInt(5, calendarioDTO.getTotaleB().intValue());
 		ptmt.setDate(6, new java.sql.Date(data.getTime()));
-		result = ptmt.executeUpdate();
-		if(result==0)
+		if(ptmt.executeUpdate()==0)
 			throw new Exception("Update Failed");
 		return calendarioDTO;
 	}
 	private String getOldTiOpeAge(AgendaDettaglioBean appuntamento,StringBuffer sb,PreparedStatement ptmt,ResultSet rs) throws SQLException{
 		sb = new StringBuffer();
-		sb.append("SELECT *, ");
+		sb.append("SELECT * ");
 		sb.append("       from `agenda dettaglio` ");
 		sb.append("WHERE  dataora = ? ");
 		sb.append("       AND ti_age = 'R' ");

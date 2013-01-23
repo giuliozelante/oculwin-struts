@@ -22,13 +22,14 @@ public class AgendaDettaglioBean implements Serializable{
 	private Boolean visita;
 	private String pnascita;
 	private Date datePnascita;
+	private Boolean deleted;
 
 	public AgendaDettaglioBean() {
 	}
 
 	public AgendaDettaglioBean(Integer pgAge, Integer mcod, String pden,
 			String ptel, String dataora, String ora, String note, String tiAge,
-			String tiOpeAge, Boolean visita, String pnascita) {
+			String tiOpeAge, Boolean visita, String pnascita, Boolean deleted) {
 		this.pgAge = pgAge;
 		this.mcod = mcod;
 		this.pden = pden;
@@ -40,6 +41,7 @@ public class AgendaDettaglioBean implements Serializable{
 		this.tiOpeAge = tiOpeAge;
 		this.visita = visita;
 		this.pnascita = pnascita;
+		this.deleted = deleted;
 	}
 
 	@Column(name = "Pg_age")
@@ -147,5 +149,13 @@ public class AgendaDettaglioBean implements Serializable{
 
 	public void setDatePnascita(Date datePnascita) {
 		this.datePnascita = datePnascita;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
 	}
 }

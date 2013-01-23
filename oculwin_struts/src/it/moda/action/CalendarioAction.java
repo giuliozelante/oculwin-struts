@@ -20,7 +20,6 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
 import org.apache.struts.actions.DispatchAction;
 
 public class CalendarioAction extends DispatchAction{
@@ -114,14 +113,9 @@ public class CalendarioAction extends DispatchAction{
 		CalendarioForm calendarioForm = (CalendarioForm) form;
 
 		ActionErrors errors = calendarioForm.validate(mapping, request);
-		try{
-			if(errors.isEmpty()){
-				CalendarioDAO calendarioDAO = new CalendarioDAO();
-				calendarioDAO.saveAllAppointments(Utils.parseDate(calendarioForm.getData()), calendarioForm.getAppuntamenti());
-			}
-		}catch(Exception e){
-			log.error(e.getMessage(), e);
-			errors.add("org.apache.struts.action.GLOBAL_MESSAGE", new ActionMessage("errors.detail", "Errore nel salvataggio dei dati: "+e.getMessage()));
+		if(errors.isEmpty()){
+			CalendarioDAO calendarioDAO = new CalendarioDAO();
+			calendarioDAO.saveAllAppointments(Utils.parseDate(calendarioForm.getData()), calendarioForm.getAppuntamenti());
 		}
 		saveErrors(request, errors);
 		loadListaCalendario(calendarioForm,request);
