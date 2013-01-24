@@ -86,11 +86,11 @@ function deleteAppuntamento(index){
 /**---------------------Aggiorno il calendario------------------*/
 		   updateCalendario(xml);
 /**---------------------Elimino la riga selezionata-------------------*/
-		    $('#divAppuntamenti table').find('tr:eq('+index+1+')').remove();
-		    $tr = $('#divAppuntamenti table tr');
+		    $('#divAppuntamenti table tbody').find('tr:eq('+(index*2)+')').remove();
+		    $tr = $('#divAppuntamenti table tbody tr:not(.hiddenTr,.newRow)');
 		    $tr.each(function( i ) {
-		    	if(i!=0||i!=$tr.length)
-		    		(i-1)%2==0?$(this).removeClass().addClass('even'):$(this).removeClass().addClass('odd');
+		    	//if(i!=0||i!=$tr.length)
+		    		(i)%2==0?$(this).removeClass().addClass('even'):$(this).removeClass().addClass('odd');
 	    	});
 			$('#divAppuntamenti tfoot').find('[onclick*="insertNewAppuntamento('+newRowNum+')"]').attr('onclick',$('[onclick*="insertNewAppuntamento('+newRowNum+')"]').attr('onclick').replace(newRowNum,newRowNum-1));
 			newRowNum--;
@@ -98,9 +98,6 @@ function deleteAppuntamento(index){
 //		alert("OK");
 	$('img[alt="loading"]').show();
 	$("#loading").hide();
-	
-
-	
 }
 
 function updateCalendario(xml){
@@ -149,7 +146,7 @@ function updateCalendario(xml){
 }
 /**-----------------------------Inserisci Nuovo Appuntamento----------------------*/
 function insertNewAppuntamento(index){
-	$newRow=$($('.newRow')[newRowNum]);
+	$newRow=$($('.newRow')[0]);
 	
 	fillPazientiList(index,$newRow);
 	$anotherNewRow=$newRow.clone();
@@ -178,8 +175,9 @@ function insertNewAppuntamento(index){
 		$(this).attr('onkeypress',$(this).attr('onkeypress').replace(index,index+1));
 	});
 
-	 $('#divAppuntamenti tfoot').find('[onclick*="insertNewAppuntamento('+index+')"]').attr('onclick',$('[onclick*="insertNewAppuntamento('+index+')"]').attr('onclick').replace(index,index+1));
+	$('#divAppuntamenti tfoot').find('[onclick*="insertNewAppuntamento('+index+')"]').attr('onclick',$('[onclick*="insertNewAppuntamento('+index+')"]').attr('onclick').replace(index,index+1));
 	
+	$newRow.removeClass('newRow');
 	$newRow.show();
 	
 	newRowNum++;
@@ -270,7 +268,7 @@ $(document).ready(function(){
 	$('div#divAppuntamenti').on("keyup", 'input[type="text"]',function() {
 		dataChanged($(this));
 	});
-	//newRowNum = $('div#divAppuntamenti tbody tr').length-1;
+	newRowNum = $('div#divAppuntamenti tbody tr:not(.hiddenTr,.newRow)').length;
 });
 
 	/*

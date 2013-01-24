@@ -42,8 +42,11 @@ public class CalendarioDAO extends GenericDAO{
 			StringBuffer sb;
 			con=getConnection();
 			//	if(pag.getTotRows()==0){
-			sb = new StringBuffer("SELECT count(*) FROM "+table+ " WHERE DATA>=CURDATE()");
+			sb = new StringBuffer("SELECT count(*) FROM "+table+ " WHERE DATA >= ?");
 			ptmt=con.prepareStatement(sb.toString());
+			GregorianCalendar gc=(GregorianCalendar)GregorianCalendar.getInstance();
+			gc.add(GregorianCalendar.DAY_OF_MONTH, -(gc.get(GregorianCalendar.DAY_OF_WEEK)-2));
+			ptmt.setDate(1,new java.sql.Date(gc.getTimeInMillis()) );
 			rs=ptmt.executeQuery();
 			if(rs.next()){this.getPaginator().setTotRows(rs.getInt(1));}
 
@@ -84,10 +87,13 @@ public class CalendarioDAO extends GenericDAO{
 		try
 		{
 			con=getConnection();
-			sb = new StringBuffer("SELECT * FROM CALENDARIO WHERE DATA >=CURDATE() ORDER BY DATA LIMIT ?, ?");
+			sb = new StringBuffer("SELECT * FROM CALENDARIO WHERE DATA >= ? ORDER BY DATA LIMIT ?, ?");
 			ptmt=con.prepareStatement(sb.toString());
-			ptmt.setInt(1, this.getPaginator().getPage()*this.getPaginator().getRowNums());
-			ptmt.setInt(2, this.getPaginator().getRowNums());
+			GregorianCalendar gc=(GregorianCalendar)GregorianCalendar.getInstance();
+			gc.add(GregorianCalendar.DAY_OF_MONTH, -(gc.get(GregorianCalendar.DAY_OF_WEEK)-2));
+			ptmt.setDate(1,new java.sql.Date(gc.getTimeInMillis()) );
+			ptmt.setInt(2, this.getPaginator().getPage()*this.getPaginator().getRowNums());
+			ptmt.setInt(3, this.getPaginator().getRowNums());
 			rs=ptmt.executeQuery();
 			while(rs.next())
 			{
@@ -429,7 +435,7 @@ public class CalendarioDAO extends GenericDAO{
 			for(Iterator i = appuntamenti.iterator();i.hasNext();){
 				appuntamento = (AgendaDettaglioBean)i.next();
 
-				if(appuntamento.getPgAge()==0 && appuntamento.getTiOpeAge().equalsIgnoreCase("I")){
+				if((appuntamento.getPgAge()==null||appuntamento.getPgAge()==0) && appuntamento.getTiOpeAge().equalsIgnoreCase("I")){
 					GregorianCalendar gc = (GregorianCalendar) GregorianCalendar.getInstance();
 					gc.setTime(data);
 					if(gc.get(GregorianCalendar.DAY_OF_WEEK)==6)
@@ -501,14 +507,14 @@ public class CalendarioDAO extends GenericDAO{
 					if(ptmt.executeUpdate()==0)
 						throw new Exception("Update Failed");
 				}
-				if(appuntamento.getPgAge()!=0){
-					oldTiOpeAge = getOldTiOpeAge(appuntamento, sb, ptmt, rs);
-					if(!oldTiOpeAge.equalsIgnoreCase("I") && appuntamento.getTiOpeAge().equalsIgnoreCase("I"))
+				oldTiOpeAge = getOldTiOpeAge(appuntamento, sb, ptmt, rs);
+				if(appuntamento.getPgAge()!=0 && appuntamento.getPden()!=null&&!appuntamento.getPden().equals("")
+						&&!oldTiOpeAge.equalsIgnoreCase("I") && appuntamento.getTiOpeAge().equalsIgnoreCase("I")){
 						throw new Exception("Appuntamento consegna non inserito,verificare il giorno successivo");
-				}else{
+				}else if(appuntamento.getPgAge()!=0&&appuntamento.getPden()!=null&&!appuntamento.getPden().equals("")){
 					sb=new StringBuffer();
 					sb.append("UPDATE `agenda dettaglio` ");
-					sb.append("SET    mcod = ?, ");
+					sb.append("SET ");
 					sb.append("       pden = ?, ");
 					sb.append("       ptel = ?, ");
 					sb.append("       pnascita = ?, ");
@@ -518,23 +524,60 @@ public class CalendarioDAO extends GenericDAO{
 					sb.append("       ti_age = ?, ");
 					sb.append("       ti_ope_age = ?, ");
 					sb.append("       note = ? ");
-					sb.append("WHERE  dataora = ? AND pg_age = ?");
+					sb.append("WHERE  dataora = ? AND mcod = ?");
 					ptmt = con.prepareStatement(sb.toString());
-					ptmt.setInt(1, appuntamento.getMcod());
-					ptmt.setString(2, appuntamento.getPden());
-					ptmt.setString(3, appuntamento.getPtel());
-					ptmt.setDate(4, new java.sql.Date(Utils.parseDate(appuntamento.getPnascita()).getTime()));
-					ptmt.setDate(5, new java.sql.Date(Utils.parseDate(appuntamento.getDataora()).getTime()));
-					ptmt.setInt(6, appuntamento.getPgAge());
+					
+					ptmt.setString(1, appuntamento.getPden());
+					ptmt.setString(2, appuntamento.getPtel());
+					ptmt.setDate(3, !"".equals(appuntamento.getPnascita())?new java.sql.Date(Utils.parseDate(appuntamento.getPnascita()).getTime()):null);
+					ptmt.setDate(4, new java.sql.Date(data.getTime()));
+					ptmt.setInt(5, appuntamento.getPgAge());
+					ptmt.setString(6, appuntamento.getOra());
+					ptmt.setString(7, "R");
+					ptmt.setString(8, appuntamento.getTiOpeAge());
+					ptmt.setString(9, appuntamento.getNote());
+					ptmt.setDate(10, new java.sql.Date(data.getTime()));
+					ptmt.setInt(11, appuntamento.getMcod());
+					if(ptmt.executeUpdate()==0)
+						throw new Exception("Update Failed");
+
+				}else if(appuntamento.getPden()!=null&&!appuntamento.getPden().equals("")&&(appuntamento.getPgAge()==0||appuntamento.getPgAge()==null)){
+					sb = new StringBuffer();
+					sb.append("INSERT INTO `agenda dettaglio` ");
+					sb.append("            (mcod, ");
+					sb.append("             pden, ");
+					sb.append("             ptel, ");
+					sb.append("             pnascita, ");
+					sb.append("             dataora, ");
+					sb.append("             pg_age, ");
+					sb.append("             ora, ");
+					sb.append("             ti_age, ");
+					sb.append("             ti_ope_age, ");
+					sb.append("             note) ");
+					sb.append("VALUES      (?, ");
+					sb.append("             ?, ");
+					sb.append("             ?, ");
+					sb.append("             ?, ");
+					sb.append("             ?, ");
+					sb.append("             ?, ");
+					sb.append("             ?, ");
+					sb.append("             ?, ");
+					sb.append("             ?, ");
+					sb.append("             ?) ");
+					ptmt=con.prepareStatement(sb.toString());
+					ptmt.setInt(1,appuntamento.getMcod());
+					ptmt.setString(2,appuntamento.getPden());
+					ptmt.setString(3,appuntamento.getPtel());
+					ptmt.setDate(4,new java.sql.Date(Utils.parseDate(appuntamento.getPnascita()).getTime()));
+					ptmt.setDate(5, new java.sql.Date(GregorianCalendar.getInstance().getTimeInMillis()));
+					ptmt.setInt(6,appuntamento.getPgAge());
 					ptmt.setString(7, appuntamento.getOra());
 					ptmt.setString(8, appuntamento.getTiAge());
 					ptmt.setString(9, appuntamento.getTiOpeAge());
 					ptmt.setString(10, appuntamento.getNote());
-					ptmt.setDate(11, new java.sql.Date(data.getTime()));
-					ptmt.setInt(12, appuntamento.getPgAge());
+					con.setAutoCommit(false);
 					if(ptmt.executeUpdate()==0)
 						throw new Exception("Update Failed");
-
 				}
 				if(oldTiOpeAge!=null&&!oldTiOpeAge.equals(""))
 						calendarioDTO = aggiornaCalendario(calendarioDTO, data, appuntamento, true, oldTiOpeAge);
@@ -918,7 +961,7 @@ public class CalendarioDAO extends GenericDAO{
 		sb.append("              OR deleted = ( 0 ) ) ");
 		sb.append("       AND pg_age = ? ");
 		ptmt=con.prepareStatement(sb.toString());
-		ptmt.setDate(1, new java.sql.Date(Utils.parseDate(appuntamento.getDataora()).getTime()));
+		ptmt.setDate(1, !"".equals(appuntamento.getDataora())?new java.sql.Date(Utils.parseDate(appuntamento.getDataora()).getTime()):null);
 		ptmt.setInt(2, appuntamento.getPgAge());
 		rs=ptmt.executeQuery();
 		String oldTiOpeAge="";

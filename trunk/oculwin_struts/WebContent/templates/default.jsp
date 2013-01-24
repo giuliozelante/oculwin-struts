@@ -22,12 +22,12 @@
 	</script>
 </head>
 <body>
-	<div id="loading" style="display: none;">
-		<iframe id="slct_blck" src="about:blank"></iframe>
-		<div class="center">
-			<html:img src="/oculwin_struts/gfx/loader.gif" alt="loading" />
+		<div id="loading" style="display: none;">
+			<iframe id="slct_blck" src="about:blank"></iframe>
+			<div class="center">
+				<html:img src="/oculwin_struts/gfx/loader.gif" alt="loading" />
+			</div>
 		</div>
-	</div>
 	<!-- 
 	<div class="info message">
 		 <h3></h3>

@@ -241,9 +241,6 @@
 										<td>
 											<input type="hidden" name="appuntamenti[<%=count%>].pden" id="pden<%=count%>" />
 											<input type="hidden" name="appuntamenti[<%=count%>].pgAge" id="pgAge<%=count%>" />
-											<input type="hidden" name="appuntamenti[<%=count%>].mcod" id="mcod<%=count%>" />
-											<input type="hidden" name="appuntamenti[<%=count%>].dataora" id="dataora<%=count%>" />
-											<input type="hidden" name="appuntamenti[<%=count%>].visita" id="visita<%=count%>" />
 											<div id="pazientiHiddenDiv<%=count%>">
 												<select name="paziente" id="paziente<%=count%>" onchange="javascript:assignPaziente(this,<%=count%>);"></select>
 											</div>
@@ -327,6 +324,11 @@
 						</select>
 					</div>
 				</html:form>
+				<div id="divCalendarioForm2">
+					<html:form action="/calendario">
+						
+					</html:form>
+				</div>
 				<script type="text/javascript">
 				<!--
 				/*$(document).ready(function() {
