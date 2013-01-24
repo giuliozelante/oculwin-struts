@@ -25,7 +25,7 @@ public class Utils {
 		try {
 			return sdf.parse(date);
 		} catch (ParseException e) {
-			log.error(e.getMessage(),e);
+			//log.error(e.getMessage(),e);
 			return null;
 		}
 	}
@@ -35,7 +35,7 @@ public class Utils {
 		try {
 			return date!=null?sdf.format(date):"";
 		} catch (Exception e) {
-			log.error(e.getMessage(),e);
+			//log.error(e.getMessage(),e);
 			return "";
 		}
 	}
@@ -45,7 +45,7 @@ public class Utils {
 		try {
 			return date!=null?sdf.format(date):"";
 		} catch (Exception e) {
-			log.error(e.getMessage(),e);
+			//log.error(e.getMessage(),e);
 			return "";
 		}
 	}
@@ -58,14 +58,17 @@ public class Utils {
 		return out.toString();
 	}
 	public static int calculateAge(Date dateOfBirth){
-		 Calendar cal1 = new GregorianCalendar();
-	      Calendar cal2 = new GregorianCalendar();
-	      int factor = 0; 
-	      
-	      cal1.setTime(dateOfBirth);
-	      if(cal2.get(Calendar.DAY_OF_YEAR) < cal1.get(Calendar.DAY_OF_YEAR)) {
-	            factor = -1; 
-	      }
-	      return cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR) + factor;
+		Calendar cal1 = new GregorianCalendar();
+		Calendar cal2 = new GregorianCalendar();
+		int factor = 0; 
+		if(dateOfBirth!=null){
+			cal1.setTime(dateOfBirth);
+			if(cal2.get(Calendar.DAY_OF_YEAR) < cal1.get(Calendar.DAY_OF_YEAR)) {
+				factor = -1; 
+			}
+			return cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR) + factor;
+		}
+		else
+			return 6;
 	}
 }
