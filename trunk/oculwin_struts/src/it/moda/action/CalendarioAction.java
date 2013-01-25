@@ -84,9 +84,10 @@ public class CalendarioAction extends DispatchAction{
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		//	    out.println("<select name=\"pazienti\" id=\"pazienti\" onselect=\"assignPaziente(this.value,"+request.getParameter("index")+")\">\n");
+		out.println("<option value=\"\"> --- SELEZIONA UN PAZIENTE --- </option>");
 		for (Iterator i = calendarioForm.getPazienti().iterator(); i.hasNext(); ){
 			PazienteBean paziente = (PazienteBean)i.next();
-			out.println("<option value=\""+paziente.getPden()+"|"+paziente.getDatePnascita()+"|"+paziente.getPnascita()+"\">"+paziente.getPden()+" | "+paziente.getPnascita()+"</option>\n");
+			out.println("<option value=\""+paziente.getPden()+"|"+paziente.getDatePnascita()+"|"+paziente.getPnascita()+"\">"+paziente.getPden()+" | "+paziente.getPnascita()+"</option>");
 		}
 		//	    out.println("</select>\n");
 		out.flush();

@@ -178,6 +178,7 @@
 										<td id="tdOra${i}">
 											<div id="oraHiddenDiv${i}">
 												<nested:select property="ora" styleId="ora${i}" onchange="javascript:assignOra(${i},this)">
+													<html:option value=""> --- SELEZIONA L'ORA --- </html:option>
 													<html:option value="08:00">08:00</html:option>
 													<html:option value="08:30">08:30</html:option>
 													<html:option value="09:00">09:00</html:option>
@@ -203,6 +204,7 @@
 										<td><nested:text property="ptel" styleId="ptel${i}"/><nested:messages id="ptel" property="ptel" /></td>
 										<td>
 											<nested:select property="tiOpeAge" styleId="tiOpeAge${i}">
+												<html:option value=""> --- SELEZIONA L'INTERVENTO --- </html:option>
 												<html:option value="A">Altro</html:option>
 												<html:option value="I">Impronta</html:option>
 												<html:option value="R">Rinnovo</html:option>
@@ -212,6 +214,7 @@
 											</nested:select>
 										</td>
 										<td><nested:select property="note" styleId="note${i}">
+												<html:option value=""> --- SELEZIONA LA NOTA --- </html:option>
 												<html:option value="IMPRONTA">IMPRONTA</html:option>
 												<html:option value="RINNOVO">RINNOVO</html:option>
 												<html:option value="RINNOVO IN GIORNATA">RINNOVO IN GIORNATA</html:option>
@@ -223,7 +226,7 @@
 												<html:option value="SPEDIZIONE">SPEDIZIONE</html:option>
 											</nested:select>
 										</td>
-										<td><a href="javascript:void(0);" onclick="saveChangesAppuntamento(${i})"><img src="/oculwin_struts/gfx/save_16.gif" alt="salva" style="visibility: hidden;"/></a></td>
+										<td>&nbsp;<!-- <a href="javascript:void(0);" onclick="saveChangesAppuntamento(${i})"><img src="/oculwin_struts/gfx/save_16.gif" alt="salva" style="visibility: hidden;"/></a> --></td>
 									</tr><%count=(i+1);%>
 								</nested:iterate>
 								</nested:notEmpty>
@@ -296,7 +299,7 @@
 												<option value="SOSTITUZIONE">SOSTITUZIONE</option>
 												<option value="SPEDIZIONE">SPEDIZIONE</option></select>
 										</td>
-										<td><a href="javascript:void(0);" onclick="saveChangesAppuntamento(<%=count%>)"><img src="/oculwin_struts/gfx/save_16.gif" alt="salva" style="visibility: hidden;"></a></td>
+										<td>&nbsp;<!--<a href="javascript:void(0);" onclick="saveChangesAppuntamento(<%=count%>)"> <img src="/oculwin_struts/gfx/save_16.gif" alt="salva" style="visibility: hidden;"></a> --></td>
 									</tr>
 							</tbody>
 							<tfoot>

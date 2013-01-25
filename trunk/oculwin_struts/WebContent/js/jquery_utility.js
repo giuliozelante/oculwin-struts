@@ -3,38 +3,24 @@ var i;
 var newRowNum = 0;
 function fillPazientiList(index,element) {
 	elem=element;
-//	i=index;
-//	$(element).removeAttr('onclick');
-//	$(element).removeAttr('onkeypress');
 	$("#loading").show();
 	$(element.parentNode).hide();
 	$(element.parentNode).next("tr").show();
-//	$(element).children("#spanPden"+index).html("");
 	if($("#paziente").children().length==0){
 		$.get("calendario.do?method=fillPazientiList",function(response){
 			$("#loading").hide();
 			$("#paziente").html(response);
 			$("#paziente"+index).html($("#paziente").html());
+			$('#paziente'+index+' option[value*="'+$('#pden'+index).val()+'"]').attr("selected","selected");
 		});
 	}else{
 		$("#loading").hide();
 		$("#paziente"+index).html($("#paziente").html());
+		$('#paziente'+index+' option[value*="'+$('#pden'+index).val()+'"]').attr("selected","selected");
 	}
+	
 }
-//var fillPazienti=function fillPazientiList() {
-//	$(element).removeAttr('onclick');
-//	$(element).removeAttr('onkeypress');
-//	$(element).children("div").show();
-//	$(element).children("#spanPden"+i).html("");
-//	if($("#pazienti").children().length==0){
-//		$.get("calendario.do?method=fillPazientiList",function(response){
-//			$("#pazienti").html(response);
-//			$("#pazienti"+i).html($("#pazienti").html());
-//		});
-//	}else{
-//		$("#pazienti"+i).html($("#pazienti").html());
-//	}
-//};
+
 function assignPaziente(element,index){
 	var pden=$(element).val().split("|")[0];
 	var pnascita=$(element).val().split("|")[1];
@@ -49,8 +35,8 @@ function assignPaziente(element,index){
 }
 function assignOra(index,obj){
 	$("#ora"+index).html($(obj).val);
-//	obj.parentNode.parentNode.style.background="#f00";
 }
+
 function deleteAppuntamento(index){
 	$("#loading").show();
 	$('img[alt="loading"]').hide();
@@ -255,13 +241,6 @@ function dataChanged(element){
 }
 /** ----------------------Functions Assigned at page LOAD ---------------------*/
 $(document).ready(function(){
-	//fun=$('div#divCalendario td').attr('onclick');
-//	$('div#divCalendario td').each(function(i){
-//		fun[i]=$(this).attr('onclick');
-//		$(this).attr('onclick','');
-		//$(this).on('click',eval(fun[i]));
-//	});
-	//$('div#divCalendario td').on('click',fun);
 	$('div#divAppuntamenti').on("change",'select',function() {
 		dataChanged($(this));
 	});
@@ -269,45 +248,24 @@ $(document).ready(function(){
 		dataChanged($(this));
 	});
 	newRowNum = $('div#divAppuntamenti tbody tr:not(.hiddenTr,.newRow)').length;
+	$('form').submit(validate);
 });
 
-	/*
-	 // Initially, hide them all
-	 hideAllMessages();
-	 
-	 // Show message
-//	 for(var i=0;i<myMessages.length;i++)
-//	 {
-//		showMessage(myMessages[i]);
-//	 }
-	 
-	 // When message is clicked, hide it
-	 $('.message').click(function(){			  
-			  $(this).animate({top: -$(this).outerHeight()}, 500);
-	  });
-	  */	
-
-//function alertExitingWithoutSaving(action){
-//	
-//}
-
-/**----------------------------Alert Messages--------------------------
-var myMessages = ['info','warning','error','success'];
-function hideAllMessages()
-{
-		 var messagesHeights = new Array(); // this array will store height for each
-	 
-		 for (i=0; i<myMessages.length; i++)
-		 {
-				  messagesHeights[i] = $('.' + myMessages[i]).outerHeight(); // fill array
-				  $('.' + myMessages[i]).css('top', -messagesHeights[i]); //move element outside viewport	  
-		 }
-}
-function showMessage(type)
-{
-	$('.'+ type +'-trigger').click(function(){
-		  hideAllMessages();				  
-		  $('.'+type).animate({top:"0"}, 500);
+var validate= function (event){
+	event.preventDefault();
+	var messages="";
+	$('div#divAppuntamenti tbody tr.hiddenTr:not(.newRow)').each(function(i){
+		if($('#paziente'+i).val()==""&&$('#pden'+i).val()==""){$('#paziente'+i).closest('td').css('background','#e00');messages+='Selezionare un paziente alla riga '+(i+1)+'\n';}
+		if($('#ora'+i).val()==""){$('#ora'+i).closest('td').css('background','#e00');messages+='Selezionare l\'ora dell\'appuntamento alla riga '+(i+1)+'\n';}
+		if($('#tiOpeAge'+i).val()==""){$('#tiOpeAge'+i).closest('td').css('background','#e00');messages+='Selezionare il tipo di appuntamento alla riga '+(i+1)+'\n';}
+		if($('#note'+i).val()==""){$('#note'+i).closest('td').css('background','#e00');messages+='Selezionare la nota dell\' appuntamento alla riga '+(i+1)+'\n';}
+		
 	});
-}
-*/
+	if(messages==""){
+		return true;
+		$(this).submit();
+	}else{
+		alert(messages);
+		return false;
+	}
+};
